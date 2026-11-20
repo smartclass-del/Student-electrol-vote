@@ -9,12 +9,14 @@
 .card{max-width:650px;margin:20px auto;background:#fff;padding:25px;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
 h1{text-align:center;color:#166534} input,button,select{width:100%;padding:13px;margin:8px 0;border-radius:10px;border:1px solid #ddd;font-size:16px}
 button{background:#16a34a;color:#fff;border:none;font-weight:bold;cursor:pointer}
-.cand{border:1px solid #ddd;padding:12px;border-radius:10px;margin:8px 0;cursor:pointer}
+.btn-small{width:auto;padding:5px 10px;font-size:13px;margin:0}
+.cand{border:1px solid #ddd;padding:12px;border-radius:10px;margin:8px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
 .cand.selected{border:2px solid #16a34a;background:#f0fdf4}
 .result-bar{height:12px;background:#e5e7eb;border-radius:10px;overflow:hidden;margin:5px 0}
 .result-fill{height:100%;background:#16a34a} .hidden{display:none}
 table{width:100%;border-collapse:collapse;font-size:14px} td,th{border:1px solid #ddd;padding:8px;text-align:left}
 .admin-box{background:#fef3c7;padding:15px;border-radius:10px;margin-top:15px}
+.result-box{background:#f0fdf4;border:2px solid #16a34a;padding:15px;border-radius:12px}
 </style>
 </head>
 <body>
@@ -55,20 +57,28 @@ table{width:100%;border-collapse:collapse;font-size:14px} td,th{border:1px solid
 </div>
 <div class="card hidden" id="adminCard">
   <h2>🔐 Admin Dashboard</h2>
-  <h3>📊 Matokeo ya Sasa</h3>
-  <div id="adminResults">Inapakia...</div>
+  <div class="result-box">
+    <h3 style="margin-top:0">📊 MATOKEO - HAPA NDIPO UNAONA MATOKEO</h3>
+    <div id="adminResults">Inapakia...</div>
+    <p id="totalVotes" style="font-weight:bold"></p>
+  </div>
   <hr>
-  <h3>👥 Waliopiga Kura</h3>
-  <div id="votersList">Inapakia...</div>
-  <hr>
-  <h3>➕ Ongeza Mgombea Mpya</h3>
-  <input id="newCandName" placeholder="Jina la mgombea">
+  <h3>➕ ONGEZA MTU UNAYEMTAKA</h3>
+  <p>Andika jina la mtu unayemtaka awe mgombea, chagua nafasi, bonyeza Ongeza.</p>
+  <input id="newCandName" placeholder="Mf: Juma Peter">
   <select id="newCandPos"><option>Rais</option><option>Makamu Rais</option><option>Katibu</option><option>Mhazini</option></select>
-  <button onclick="addCandidate()" style="background:#2563eb">Ongeza Mgombea</button>
-  <hr>
-  <button onclick="resetVotes()" style="background:#dc2626">🗑️ Futa Kura Zote</button>
-  <button onclick="location.reload()" style="background:#6b7280">Toka Admin</button>
+  <button onclick="addCandidate()" style="background:#2563eb">➕ Ongeza Huyu Mgombea</button>
   <p id="adminActionMsg" style="text-align:center;color:green"></p>
+  <h4>Wagombea waliopo (Bonyeza ❌ kufuta)</h4>
+  <div id="adminCandList"></div>
+  <hr>
+  <h3>👥 WALIOPIGA KURA / WALIOINGIA</h3>
+  <div id="votersList">Inapakia...</div>
+  <button onclick="deleteAllVoters()" style="background:#f97316">🗑️ Futa Majina YOTE ya Wapiga Kura</button>
+  <hr>
+  <h3>⚠️ Kuanzisha Upya</h3>
+  <button onclick="resetVotes()" style="background:#dc2626">🗑️ Futa Kura + Futa Majina Yote (Anza Upya Kabisa)</button>
+  <button onclick="location.reload()" style="background:#6b7280">Toka Admin</button>
 </div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -98,7 +108,7 @@ async function loadCandidates(){
     const snap=await db.collection('candidates').get();
     if(!snap.empty){ allCandidates=[]; snap.forEach(d=>allCandidates.push({id:d.id,...d.data()})); renderCandidates(); }
     else{ for(let c of defaultCandidates){ await db.collection('candidates').add(c); } }
-  }catch(e){ document.getElementById('loadMsg').innerText="Wagombea wa mwanzo wamepakiwa (offline)."; }
+  }catch(e){}
 }
 function renderCandidates(){
   document.getElementById('loadMsg').innerText="";
@@ -106,7 +116,7 @@ function renderCandidates(){
   let html=""; positions.forEach(pos=>{
     html+=`<div><h3>${pos}</h3>`;
     allCandidates.filter(c=>c.position===pos).forEach(c=>{
-      html+=`<div class="cand" id="cand-${c.id}" onclick="select('${pos}','${c.id}')"><b>${c.name}</b> - Chagua</div>`;
+      html+=`<div class="cand" onclick="select('${pos}','${c.id}')" id="cand-${c.id}"><b>${c.name}</b><span>Chagua</span></div>`;
     }); html+=`</div>`;
   });
   document.getElementById('positions').innerHTML=html;
@@ -139,21 +149,45 @@ function adminLogin(){
   document.getElementById('loginCard').classList.add('hidden'); document.getElementById('adminCard').classList.remove('hidden'); loadAdmin();
 }
 async function loadAdmin(){
-  let list=defaultCandidates; let voters=[];
-  try{ if(db){ const snap=await db.collection('candidates').get(); if(!snap.empty){ list=[]; snap.forEach(d=>list.push({id:d.id,...d.data()})); } const sSnap=await db.collection('students').get(); sSnap.forEach(d=>voters.push(d.data())); } }catch(e){}
-  const positions=[...new Set(list.map(c=>c.position))]; let html=""; positions.forEach(pos=>{ html+=`<h4>${pos}</h4>`; list.filter(c=>c.position===pos).sort((a,b)=>(b.votes||0)-(a.votes||0)).forEach(c=>{ html+=`<div>${c.name} - <b>${c.votes||0} kura</b></div>`; }); });
+  let list=defaultCandidates; let voters=[]; let voterDocs=[];
+  try{ if(db){ const snap=await db.collection('candidates').get(); if(!snap.empty){ list=[]; snap.forEach(d=>list.push({id:d.id,...d.data()})); } const sSnap=await db.collection('students').get(); sSnap.forEach(d=>{ voters.push(d.data()); voterDocs.push({id:d.id,...d.data()}); }); } }catch(e){}
+  const positions=[...new Set(list.map(c=>c.position))]; let html=""; let totalAll=0;
+  positions.forEach(pos=>{ html+=`<h4>${pos}</h4>`; list.filter(c=>c.position===pos).sort((a,b)=>(b.votes||0)-(a.votes||0)).forEach(c=>{ totalAll+=(c.votes||0); html+=`<div>${c.name} - <b>${c.votes||0} kura</b></div>`; }); });
   document.getElementById('adminResults').innerHTML=html;
-  if(voters.length===0){ document.getElementById('votersList').innerHTML="Bado hakuna aliyeingia kwenye Firebase. Angalia Rules."; } else { let vHtml=`<table><tr><th>Jina</th><th>Reg</th><th>Amepiga?</th></tr>`; voters.forEach(s=>{ vHtml+=`<tr><td>${s.name||''}</td><td>${s.reg||''}</td><td>${s.voted?'✅ Ndiyo':'❌ Bado'}</td></tr>`; }); vHtml+=`</table>`; document.getElementById('votersList').innerHTML=vHtml; }
+  document.getElementById('totalVotes').innerText="Jumla ya kura zote: "+totalAll;
+  let candHtml=""; list.forEach(c=>{ candHtml+=`<div style="display:flex;justify-content:space-between;border:1px solid #ddd;padding:8px;border-radius:8px;margin:4px 0"><span>${c.name} - ${c.position} (${c.votes||0} kura)</span><button class="btn-small" style="background:#dc2626" onclick="deleteCandidate('${c.id}')">❌ Futa</button></div>`; });
+  document.getElementById('adminCandList').innerHTML=candHtml||"Hakuna wagombea";
+  if(voterDocs.length===0){ document.getElementById('votersList').innerHTML="Hakuna majina. Mfumo umesafishwa."; } else { let vHtml=`<table><tr><th>Jina</th><th>Reg</th><th>Amepiga?</th><th></th></tr>`; voterDocs.forEach(s=>{ vHtml+=`<tr><td>${s.name||''}</td><td>${s.reg||''}</td><td>${s.voted?'✅ Ndiyo':'❌ Bado'}</td><td><button class="btn-small" style="background:#dc2626" onclick="deleteVoter('${s.id}')">❌</button></td></tr>`; }); vHtml+=`</table><p><b>Jumla:</b> ${voterDocs.length} walioingia</p>`; document.getElementById('votersList').innerHTML=vHtml; }
 }
 async function addCandidate(){
   const n=document.getElementById('newCandName').value.trim(); const pos=document.getElementById('newCandPos').value;
-  if(!n){ alert("Andika jina"); return; }
+  if(!n){ alert("Andika jina la mtu unayemtaka kuongeza"); return; }
   try{ await db.collection('candidates').add({name:n,position:pos,votes:0}); }catch(e){ alert("Kosa Firebase: "+e.message); return; }
-  document.getElementById('adminActionMsg').innerText="Mgombea "+n+" ameongezwa!"; document.getElementById('newCandName').value=""; loadAdmin();
+  document.getElementById('adminActionMsg').innerText="✅ "+n+" ameongezwa kama "+pos+"!";
+  document.getElementById('newCandName').value=""; loadAdmin();
+}
+async function deleteCandidate(id){
+  if(!confirm("Futa huyu mgombea?")) return;
+  if(id.startsWith("local")){ alert("Mgombea wa mwanzo - fungua Firebase kuufuta"); return; }
+  await db.collection('candidates').doc(id).delete(); loadAdmin();
+}
+async function deleteVoter(id){
+  if(!confirm("Futa huyu mtu? Ataweza kupiga kura tena.")) return;
+  await db.collection('students').doc(id).delete(); loadAdmin();
+}
+async function deleteAllVoters(){
+  if(!confirm("Futa MAJINA YOTE ya wapiga kura?")) return;
+  const sSnap=await db.collection('students').get();
+  for(let d of sSnap.docs){ await db.collection('students').doc(d.id).delete(); }
+  localStorage.clear(); alert("Majina yote yamefutwa!"); loadAdmin();
 }
 async function resetVotes(){
-  if(!confirm("Futa kura ZOTE?")) return;
-  try{ const snap=await db.collection('candidates').get(); for(let d of snap.docs){ await db.collection('candidates').doc(d.id).update({votes:0}); } localStorage.clear(); alert("Kura zimefutwa!"); }catch(e){ alert("Kosa: "+e.message); }
+  if(!confirm("Una uhakika? Itafuta KURA na MAJINA YOTE. Anza upya kabisa.")) return;
+  try{
+    const snap=await db.collection('candidates').get(); for(let d of snap.docs){ await db.collection('candidates').doc(d.id).update({votes:0}); }
+    const sSnap=await db.collection('students').get(); for(let d of sSnap.docs){ await db.collection('students').doc(d.id).delete(); }
+    localStorage.clear(); alert("Imesafishwa kabisa! Kura 0, Majina 0."); 
+  }catch(e){ alert("Kosa: "+e.message); }
   loadAdmin();
 }
 </script>
