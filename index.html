@@ -7,7 +7,7 @@
 <style>
 *{box-sizing:border-box} body{font-family:Arial,sans-serif;background:#f0f4f8;margin:0;padding:15px}
 .card{max-width:650px;margin:20px auto;background:#fff;padding:25px;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
-h1{text-align:center;color:#166534} input,button,select{width:100%;padding:13px;margin:8px 0;border-radius:10px;border:1px solid #ddd;font-size:16px}
+h1{text-align:center;color:#166534} input,button,select,textarea{width:100%;padding:13px;margin:8px 0;border-radius:10px;border:1px solid #ddd;font-size:16px}
 button{background:#16a34a;color:#fff;border:none;font-weight:bold;cursor:pointer}
 .btn-small{width:auto;padding:5px 10px;font-size:13px;margin:0}
 .cand{border:1px solid #ddd;padding:12px;border-radius:10px;margin:8px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
@@ -23,14 +23,13 @@ table{width:100%;border-collapse:collapse;font-size:14px} td,th{border:1px solid
 <body>
 <div class="card" id="loginCard">
   <h1>🗳️ TUMA</h1>
-  <p style="text-align:center">Uchaguzi wa Viongozi wa Wanafunzi<br><small style="color:#dc2626">⚠️ Ni wanafunzi waliosajiliwa tu ndio wanaweza kuingia</small><br><small style="color:#999">Version V6 - Kama huioni V6, bado una ukurasa wa zamani, fungua Incognito</small></p>
+  <p style="text-align:center">Uchaguzi wa Viongozi wa Wanafunzi<br><small>Version V7</small></p>
   <label>Jina lako:</label>
   <input id="name" placeholder="Mf: Tina">
   <label>Namba ya Usajili:</label>
   <input id="reg" placeholder="Mf: TUMA/ODIT/25/313756">
   <button onclick="login()">Ingia Kupiga Kura</button>
   <p id="loginMsg" style="color:red;text-align:center;font-weight:bold"></p>
-  <p style="text-align:center;font-size:12px;color:#666">Umesajiliwa: Tina, Godfrey - Wengine hawaruhusiwi</p>
   <hr>
   <button onclick="showResults()" style="background:#2563eb">Angalia Matokeo</button>
   <div class="admin-box">
@@ -58,10 +57,23 @@ table{width:100%;border-collapse:collapse;font-size:14px} td,th{border:1px solid
   <button onclick="location.reload()">Rudi</button>
 </div>
 <div class="card hidden" id="adminCard">
-  <h2>🔐 Admin Dashboard - V6</h2>
+  <h2>🔐 Admin Dashboard - V7</h2>
   <div class="result-box"><h3 style="margin-top:0">📊 MATOKEO</h3><div id="adminResults">Inapakia...</div><p id="totalVotes" style="font-weight:bold"></p></div>
   <hr>
-  <div class="student-box"><h3 style="margin-top:0">🎓 WANAFUNZI WALIOSAJILIWA</h3><div id="allowedList"></div></div>
+  <div class="student-box">
+    <h3 style="margin-top:0">🎓 ONGEZA WATU WENGI KWA PAMOJA</h3>
+    <p><b>1. Kuongeza mmoja mmoja:</b></p>
+    <input id="newStudentName" placeholder="Jina - Mf: Juma Peter">
+    <input id="newStudentReg" placeholder="Namba - Mf: TUMA/ODIT/25/xxxxxx">
+    <button onclick="addStudent()" style="background:#2563eb">➕ Msajili Huyu Mmoja</button>
+    <hr>
+    <p><b>2. Kuongeza wengi kwa pamoja (Ndio hii!):</b><br>Andika kila mtu kwenye mstari wake, hivi:<br><small>Juma Peter, TUMA/ODIT/25/111111<br>Neema John, TUMA/ODIT/25/222222<br>Kelvin Sam, TUMA/ODIT/25/333333</small></p>
+    <textarea id="bulkStudents" rows="6" placeholder="Juma Peter, TUMA/ODIT/25/111111&#10;Neema John, TUMA/ODIT/25/222222&#10;Kelvin Sam, TUMA/ODIT/25/333333"></textarea>
+    <button onclick="addBulkStudents()" style="background:#1e40af">➕ Sajili Wote Hawa Kwa Pamoja</button>
+    <p id="studentActionMsg" style="text-align:center;color:green;font-weight:bold"></p>
+    <h4>Wanafunzi Waliosajiliwa Sasa:</h4>
+    <div id="allowedList"></div>
+  </div>
   <hr>
   <h3>➕ ONGEZA MGOMBEA</h3>
   <input id="newCandName" placeholder="Mf: Juma Peter">
@@ -89,78 +101,45 @@ const defaultAllowed=[{name:"Tina", reg:"TUMA/ODIT/25/313756"},{name:"Godfrey", 
 const defaultCandidates=[{name:"Baraka Mushi",position:"Rais",votes:0},{name:"Neema John",position:"Rais",votes:0},{name:"Kelvin Sam",position:"Makamu Rais",votes:0},{name:"Amina Said",position:"Makamu Rais",votes:0},{name:"Joshua Paulo",position:"Katibu",votes:0},{name:"Grace Daniel",position:"Katibu",votes:0}];
 function cleanId(s){ return s.toUpperCase().replaceAll("/","-").replaceAll(" ","-"); }
 function norm(s){ return s.toLowerCase().trim().replace(/\s+/g," "); }
-// Jina linakubaliwa kama neno la kwanza linafanana - Tina Mushi pia anakubaliwa kama Tina
-function nameMatches(allowedName, typedName){
-  let a=norm(allowedName).split(" ")[0];
-  let t=norm(typedName).split(" ")[0];
-  return a===t;
-}
-async function ensureAllowed(){ try{ if(!db) return; const snap=await db.collection('allowedStudents').get(); if(snap.empty){ for(let s of defaultAllowed){ await db.collection('allowedStudents').doc(cleanId(s.reg)).set({name:s.name, reg:s.reg}); } } }catch(e){} }
+function nameMatches(a,t){ return norm(a).split(" ")[0]===norm(t).split(" ")[0]; }
+async function ensureAllowed(){ try{ if(!db) return; const snap=await db.collection('allowedStudents').get(); if(snap.empty){ for(let s of defaultAllowed){ await db.collection('allowedStudents').doc(cleanId(s.reg)).set({name:s.name, reg:s.reg}); } } else { for(let s of defaultAllowed){ const d=await db.collection('allowedStudents').doc(cleanId(s.reg)).get(); if(!d.exists) await db.collection('allowedStudents').doc(cleanId(s.reg)).set({name:s.name, reg:s.reg}); } } }catch(e){} }
 ensureAllowed();
-function doLoginSuccess(){
-  document.getElementById('voterName').innerText=myName;
-  document.getElementById('loginCard').classList.add('hidden');
-  document.getElementById('voteCard').classList.remove('hidden');
-  loadCandidates();
-  try{ if(db) db.collection('students').doc(myDocId).set({name:myName,reg:myReg,voted:false},{merge:true}); }catch(e){}
-}
+function doLoginSuccess(){ document.getElementById('voterName').innerText=myName; document.getElementById('loginCard').classList.add('hidden'); document.getElementById('voteCard').classList.remove('hidden'); loadCandidates(); try{ if(db) db.collection('students').doc(myDocId).set({name:myName,reg:myReg,voted:false},{merge:true}); }catch(e){} }
 async function login(){
-  myName=document.getElementById('name').value.trim();
-  myReg=document.getElementById('reg').value.trim().toUpperCase();
-  if(!myName||!myReg){ document.getElementById('loginMsg').innerText="Jaza jina na namba ya usajili"; return; }
-  myDocId=cleanId(myReg);
-  document.getElementById('loginMsg').innerText="Inathibitisha... subiri...";
+  myName=document.getElementById('name').value.trim(); myReg=document.getElementById('reg').value.trim().toUpperCase();
+  if(!myName||!myReg){ document.getElementById('loginMsg').innerText="Jaza jina na namba"; return; }
+  myDocId=cleanId(myReg); document.getElementById('loginMsg').innerText="Inathibitisha...";
   if(localStorage.getItem("voted_"+myDocId)==="1"){ document.getElementById('loginMsg').innerText="Umesha pigia kura kwenye simu hii!"; return; }
   let found = defaultAllowed.find(s => cleanId(s.reg)===myDocId);
-  if(found){
-    if(!nameMatches(found.name, myName)){
-      document.getElementById('loginMsg').innerText="❌ Jina halilingani! Mfumo unamjua "+found.name+" kwa namba "+myReg;
-      return;
-    }
-    document.getElementById('loginMsg').innerText="✅ Umethibitishwa! Karibu "+myName;
-    doLoginSuccess(); ensureAllowed(); return;
-  }
+  if(found){ if(!nameMatches(found.name, myName)){ document.getElementById('loginMsg').innerText="❌ Jina halilingani! Unamjua "+found.name; return; } document.getElementById('loginMsg').innerText="✅ Umethibitishwa!"; doLoginSuccess(); ensureAllowed(); return; }
   try{ if(db){ const allowedDoc = await db.collection('allowedStudents').doc(myDocId).get(); if(allowedDoc.exists){ let allowed = allowedDoc.data(); if(!nameMatches(allowed.name, myName)){ document.getElementById('loginMsg').innerText="❌ Jina halilingani!"; return; } doLoginSuccess(); return; } } }catch(e){}
   document.getElementById('loginMsg').innerText="❌ HAUPO KWENYE MFUMO! Namba "+myReg+" haijasajiliwa.";
 }
-async function loadCandidates(){
-  allCandidates=defaultCandidates.map((c,i)=>({id:"local"+i,...c}));
-  renderCandidates();
-  try{ if(!db) return; const snap=await db.collection('candidates').get(); if(!snap.empty){ allCandidates=[]; snap.forEach(d=>allCandidates.push({id:d.id,...d.data()})); renderCandidates(); } else{ for(let c of defaultCandidates){ await db.collection('candidates').add(c); } } }catch(e){}
-}
-function renderCandidates(){
-  document.getElementById('loadMsg').innerText="";
-  const positions=[...new Set(allCandidates.map(c=>c.position))];
-  let html=""; positions.forEach(pos=>{ html+=`<div><h3>${pos}</h3>`; allCandidates.filter(c=>c.position===pos).forEach(c=>{ html+=`<div class="cand" onclick="select('${pos}','${c.id}')" id="cand-${c.id}"><b>${c.name}</b><span>Chagua</span></div>`; }); html+=`</div>`; });
-  document.getElementById('positions').innerHTML=html;
-}
+async function loadCandidates(){ allCandidates=defaultCandidates.map((c,i)=>({id:"local"+i,...c})); renderCandidates(); try{ if(!db) return; const snap=await db.collection('candidates').get(); if(!snap.empty){ allCandidates=[]; snap.forEach(d=>allCandidates.push({id:d.id,...d.data()})); renderCandidates(); } else{ for(let c of defaultCandidates){ await db.collection('candidates').add(c); } } }catch(e){} }
+function renderCandidates(){ document.getElementById('loadMsg').innerText=""; const positions=[...new Set(allCandidates.map(c=>c.position))]; let html=""; positions.forEach(pos=>{ html+=`<div><h3>${pos}</h3>`; allCandidates.filter(c=>c.position===pos).forEach(c=>{ html+=`<div class="cand" onclick="select('${pos}','${c.id}')" id="cand-${c.id}"><b>${c.name}</b><span>Chagua</span></div>`; }); html+=`</div>`; }); document.getElementById('positions').innerHTML=html; }
 function select(pos,id){ selected[pos]=id; document.querySelectorAll('.cand').forEach(el=>el.classList.remove('selected')); for(let p in selected){ let el=document.getElementById('cand-'+selected[p]); if(el) el.classList.add('selected'); } }
-async function submitVote(){
-  const positions=[...new Set(allCandidates.map(c=>c.position))];
-  if(Object.keys(selected).length<positions.length){ document.getElementById('voteMsg').innerText="Chagua mgombea kwa kila nafasi"; return; }
-  try{ if(db){ for(let pos in selected){ const cand=allCandidates.find(c=>c.id===selected[pos]); if(cand.id.startsWith("local")) continue; await db.collection('candidates').doc(cand.id).update({votes: firebase.firestore.FieldValue.increment(1)}); } await db.collection('students').doc(myDocId).update({voted:true}); } }catch(e){}
-  localStorage.setItem("voted_"+myDocId,"1");
-  document.getElementById('voteCard').classList.add('hidden');
-  document.getElementById('doneCard').classList.remove('hidden');
-}
-async function showResults(){
-  document.getElementById('loginCard').classList.add('hidden'); document.getElementById('voteCard').classList.add('hidden'); document.getElementById('doneCard').classList.add('hidden'); document.getElementById('adminCard').classList.add('hidden'); document.getElementById('resultCard').classList.remove('hidden');
-  let list=defaultCandidates;
-  try{ if(db){ const snap=await db.collection('candidates').get(); if(!snap.empty){ list=[]; snap.forEach(d=>list.push(d.data())); } } }catch(e){}
-  const positions=[...new Set(list.map(c=>c.position))]; let html=""; positions.forEach(pos=>{ html+=`<h3>${pos}</h3>`; let arr=list.filter(c=>c.position===pos); let total=arr.reduce((s,c)=>s+(c.votes||0),0)||1; arr.sort((a,b)=>(b.votes||0)-(a.votes||0)).forEach(c=>{ let pct=Math.round(((c.votes||0)/total)*100); html+=`<div><b>${c.name}</b> - ${c.votes||0} kura (${pct}%)<div class="result-bar"><div class="result-fill" style="width:${pct}%"></div></div></div>`; }); });
-  document.getElementById('results').innerHTML=html;
-}
+async function submitVote(){ const positions=[...new Set(allCandidates.map(c=>c.position))]; if(Object.keys(selected).length<positions.length){ document.getElementById('voteMsg').innerText="Chagua mgombea kwa kila nafasi"; return; } try{ if(db){ for(let pos in selected){ const cand=allCandidates.find(c=>c.id===selected[pos]); if(cand.id.startsWith("local")) continue; await db.collection('candidates').doc(cand.id).update({votes: firebase.firestore.FieldValue.increment(1)}); } await db.collection('students').doc(myDocId).update({voted:true}); } }catch(e){} localStorage.setItem("voted_"+myDocId,"1"); document.getElementById('voteCard').classList.add('hidden'); document.getElementById('doneCard').classList.remove('hidden'); }
+async function showResults(){ document.getElementById('loginCard').classList.add('hidden'); document.getElementById('voteCard').classList.add('hidden'); document.getElementById('doneCard').classList.add('hidden'); document.getElementById('adminCard').classList.add('hidden'); document.getElementById('resultCard').classList.remove('hidden'); let list=defaultCandidates; try{ if(db){ const snap=await db.collection('candidates').get(); if(!snap.empty){ list=[]; snap.forEach(d=>list.push(d.data())); } } }catch(e){} const positions=[...new Set(list.map(c=>c.position))]; let html=""; positions.forEach(pos=>{ html+=`<h3>${pos}</h3>`; let arr=list.filter(c=>c.position===pos); let total=arr.reduce((s,c)=>s+(c.votes||0),0)||1; arr.sort((a,b)=>(b.votes||0)-(a.votes||0)).forEach(c=>{ let pct=Math.round(((c.votes||0)/total)*100); html+=`<div><b>${c.name}</b> - ${c.votes||0} kura (${pct}%)<div class="result-bar"><div class="result-fill" style="width:${pct}%"></div></div></div>`; }); }); document.getElementById('results').innerHTML=html; }
 function adminLogin(){ const p=document.getElementById('adminPass').value.trim(); if(p!==ADMIN_PASS){ document.getElementById('adminMsg').innerText="Password si sahihi!"; return; } document.getElementById('loginCard').classList.add('hidden'); document.getElementById('adminCard').classList.remove('hidden'); loadAdmin(); }
 async function loadAdmin(){
-  await ensureAllowed();
-  let list=defaultCandidates; let voterDocs=[]; let allowed=[...defaultAllowed];
+  await ensureAllowed(); let list=defaultCandidates; let voterDocs=[]; let allowed=[...defaultAllowed];
   try{ if(db){ const snap=await db.collection('candidates').get(); if(!snap.empty){ list=[]; snap.forEach(d=>list.push({id:d.id,...d.data()})); } const sSnap=await db.collection('students').get(); sSnap.forEach(d=>{ voterDocs.push({id:d.id,...d.data()}); }); const aSnap=await db.collection('allowedStudents').get(); if(!aSnap.empty){ allowed=[]; aSnap.forEach(d=>{ allowed.push({id:d.id,...d.data()}); }); } } }catch(e){}
   const positions=[...new Set(list.map(c=>c.position))]; let html=""; let totalAll=0; positions.forEach(pos=>{ html+=`<h4>${pos}</h4>`; list.filter(c=>c.position===pos).sort((a,b)=>(b.votes||0)-(a.votes||0)).forEach(c=>{ totalAll+=(c.votes||0); html+=`<div>${c.name} - <b>${c.votes||0} kura</b></div>`; }); });
   document.getElementById('adminResults').innerHTML=html; document.getElementById('totalVotes').innerText="Jumla: "+totalAll+" | Wanafunzi: "+allowed.length;
   let candHtml=""; list.forEach(c=>{ candHtml+=`<div style="display:flex;justify-content:space-between;border:1px solid #ddd;padding:8px;border-radius:8px;margin:4px 0"><span>${c.name} - ${c.position} (${c.votes||0})</span><button class="btn-small" style="background:#dc2626" onclick="deleteCandidate('${c.id}')">❌</button></div>`; }); document.getElementById('adminCandList').innerHTML=candHtml;
-  let aHtml=`<table><tr><th>Jina</th><th>Reg</th></tr>`; allowed.forEach(s=>{ aHtml+=`<tr><td>${s.name}</td><td>${s.reg}</td></tr>`; }); aHtml+=`</table>`; document.getElementById('allowedList').innerHTML=aHtml;
+  let aHtml=`<table><tr><th>Jina</th><th>Reg</th><th></th></tr>`; allowed.forEach(s=>{ aHtml+=`<tr><td>${s.name}</td><td>${s.reg}</td><td><button class="btn-small" style="background:#dc2626" onclick="deleteAllowed('${s.id||cleanId(s.reg)}')">❌</button></td></tr>`; }); aHtml+=`</table><p><b>Jumla:</b> ${allowed.length} wanafunzi</p>`; document.getElementById('allowedList').innerHTML=aHtml;
   if(voterDocs.length===0){ document.getElementById('votersList').innerHTML="Bado hakuna aliyepiga."; } else { let vHtml=`<table><tr><th>Jina</th><th>Reg</th><th></th></tr>`; voterDocs.forEach(s=>{ vHtml+=`<tr><td>${s.name||''}</td><td>${s.reg||''}</td><td>${s.voted?'✅':'❌'} <button class="btn-small" style="background:#dc2626" onclick="deleteVoter('${s.id}')">❌</button></td></tr>`; }); vHtml+=`</table>`; document.getElementById('votersList').innerHTML=vHtml; }
 }
+async function addStudent(){ const n=document.getElementById('newStudentName').value.trim(); const r=document.getElementById('newStudentReg').value.trim().toUpperCase(); if(!n||!r){ alert("Jaza jina na namba"); return; } try{ await db.collection('allowedStudents').doc(cleanId(r)).set({name:n,reg:r}); }catch(e){ alert("Kosa Firebase, hakikisha Rules zimefunguliwa"); return; } document.getElementById('studentActionMsg').innerText="✅ "+n+" amesajiliwa!"; document.getElementById('newStudentName').value=""; document.getElementById('newStudentReg').value=""; loadAdmin(); }
+async function addBulkStudents(){
+  const txt=document.getElementById('bulkStudents').value.trim();
+  if(!txt){ alert("Andika orodha kwanza kwenye boksi kubwa"); return; }
+  let lines=txt.split("\n"); let count=0; let failed=0;
+  for(let line of lines){ let parts=line.split(","); if(parts.length<2) continue; let n=parts[0].trim(); let r=parts[1].trim().toUpperCase(); if(!n||!r) continue; try{ await db.collection('allowedStudents').doc(cleanId(r)).set({name:n,reg:r}); count++; }catch(e){ failed++; } }
+  if(failed>0){ document.getElementById('studentActionMsg').innerText="⚠️ Wamesajiliwa "+count+", wameshindwa "+failed+" - Fungua Firebase Rules kwanza!"; } else { document.getElementById('studentActionMsg').innerText="✅ Wanafunzi "+count+" wote wamesajiliwa!"; }
+  document.getElementById('bulkStudents').value=""; loadAdmin();
+}
+async function deleteAllowed(id){ if(!confirm("Futa huyu mwanafunzi?")) return; try{ await db.collection('allowedStudents').doc(id).delete(); }catch(e){} loadAdmin(); }
 async function addCandidate(){ const n=document.getElementById('newCandName').value.trim(); const pos=document.getElementById('newCandPos').value; if(!n){ alert("Andika jina"); return; } try{ await db.collection('candidates').add({name:n,position:pos,votes:0}); }catch(e){ alert("Kosa: "+e.message); return; } document.getElementById('adminActionMsg').innerText="✅ "+n+" ameongezwa!"; document.getElementById('newCandName').value=""; loadAdmin(); }
 async function deleteCandidate(id){ if(!confirm("Futa huyu?")) return; if(id.startsWith("local")) return; await db.collection('candidates').doc(id).delete(); loadAdmin(); }
 async function deleteVoter(id){ if(!confirm("Futa huyu?")) return; await db.collection('students').doc(id).delete(); loadAdmin(); }
