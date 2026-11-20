@@ -56,7 +56,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-let myReg="", myName="", selected={}, allCandidates=[];
+let myReg="", myDocId="", myName="", selected={}, allCandidates=[];
 const defaultCandidates=[
   {name:"Baraka Mushi", position:"Rais", votes:0},
   {name:"Neema John", position:"Rais", votes:0},
@@ -74,16 +74,17 @@ async function login(){
     myName=document.getElementById('name').value.trim();
     myReg=document.getElementById('reg').value.trim().toUpperCase();
     if(!myName||!myReg){ document.getElementById('loginMsg').innerText="Jaza jina na namba ya usajili"; return; }
+    myDocId = myReg.replaceAll("/","-").replaceAll(" ","-");
     document.getElementById('loginMsg').innerText="Inaingia... subiri...";
     await ensureCandidates();
-    const doc = await db.collection('students').doc(myReg).get();
+    const doc = await db.collection('students').doc(myDocId).get();
     if(doc.exists && doc.data().voted){ document.getElementById('loginMsg').innerText="Umesha pigia kura!"; return; }
-    await db.collection('students').doc(myReg).set({name:myName, reg:myReg, voted:false},{merge:true});
+    await db.collection('students').doc(myDocId).set({name:myName, reg:myReg, voted:false},{merge:true});
     document.getElementById('voterName').innerText=myName;
     document.getElementById('loginCard').classList.add('hidden');
     document.getElementById('voteCard').classList.remove('hidden');
     loadCandidates();
-  }catch(e){ document.getElementById('loginMsg').innerText="Kosa: "+e.message+" - Hakikisha Firestore Database umeunda na Rules umeweka allow read,write"; }
+  }catch(e){ document.getElementById('loginMsg').innerText="Kosa: "+e.message; }
 }
 async function loadCandidates(){
   const snap=await db.collection('candidates').get();
@@ -97,10 +98,7 @@ async function loadCandidates(){
   });
   document.getElementById('positions').innerHTML=html;
 }
-function select(pos,id){
-  selected[pos]=id;
-  for(let p in selected){ document.getElementById('cand-'+selected[p]).classList.add('selected'); }
-}
+function select(pos,id){ selected[pos]=id; for(let p in selected){ document.getElementById('cand-'+selected[p]).classList.add('selected'); } }
 async function submitVote(){
   const positions=[...new Set(allCandidates.map(c=>c.position))];
   if(Object.keys(selected).length<positions.length){ document.getElementById('voteMsg').innerText="Chagua mgombea kwa kila nafasi"; return; }
@@ -108,7 +106,7 @@ async function submitVote(){
     const cand=allCandidates.find(c=>c.id===selected[pos]);
     await db.collection('candidates').doc(cand.id).update({votes: firebase.firestore.FieldValue.increment(1)});
   }
-  await db.collection('students').doc(myReg).update({voted:true});
+  await db.collection('students').doc(myDocId).update({voted:true});
   document.getElementById('voteCard').classList.add('hidden');
   document.getElementById('doneCard').classList.remove('hidden');
 }
