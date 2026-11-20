@@ -3,20 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TUMAINI UNIVERSITY MAKUMIRA - Uchaguzi wa Wanafunzi</title>
+<title>TUMA - Uchaguzi</title>
 <style>
 *{box-sizing:border-box} body{font-family:Arial,sans-serif;background:#f0f4f8;margin:0;padding:15px}
 .card{max-width:600px;margin:20px auto;background:#fff;padding:25px;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
-h1{text-align:center;color:#166534} h2{color:#166534} input,button{width:100%;padding:13px;margin:8px 0;border-radius:10px;border:1px solid #ddd;font-size:16px}
+h1{text-align:center;color:#166534} input,button{width:100%;padding:13px;margin:8px 0;border-radius:10px;border:1px solid #ddd;font-size:16px}
 button{background:#16a34a;color:#fff;border:none;font-weight:bold;cursor:pointer}
-button:disabled{background:#999} .cand{border:1px solid #ddd;padding:12px;border-radius:10px;margin:8px 0;display:flex;justify-content:space-between;align-items:center}
-.cand.selected{border:2px solid #16a34a;background:#f0fdf4} .pos{margin-top:20px} .result-bar{height:12px;background:#e5e7eb;border-radius:10px;overflow:hidden;margin:5px 0}
-.result-fill{height:100%;background:#16a34a} .hidden{display:none} .success{text-align:center;color:#16a34a}
+.cand{border:1px solid #ddd;padding:12px;border-radius:10px;margin:8px 0;cursor:pointer}
+.cand.selected{border:2px solid #16a34a;background:#f0fdf4}
+.result-bar{height:12px;background:#e5e7eb;border-radius:10px;overflow:hidden;margin:5px 0}
+.result-fill{height:100%;background:#16a34a} .hidden{display:none}
 </style>
 </head>
 <body>
 <div class="card" id="loginCard">
-  <h1>🗳️ TUMAINI UNIVERSITY</h1>
+  <h1>🗳️ TUMA</h1>
   <p style="text-align:center">Uchaguzi wa Viongozi wa Wanafunzi</p>
   <label>Jina lako:</label>
   <input id="name" placeholder="Mf: Baraka Mushi">
@@ -27,27 +28,21 @@ button:disabled{background:#999} .cand{border:1px solid #ddd;padding:12px;border
   <hr>
   <button onclick="showResults()" style="background:#2563eb">Angalia Matokeo</button>
 </div>
-
 <div class="card hidden" id="voteCard">
   <h2>Karibu, <span id="voterName"></span></h2>
-  <p>Chagua mgombea mmoja kwa kila nafasi, halafu bonyeza Tuma Kura.</p>
   <div id="positions"></div>
   <button onclick="submitVote()">✅ Tuma Kura Yangu</button>
-  <p id="voteMsg" style="text-align:center"></p>
+  <p id="voteMsg" style="text-align:center;color:red"></p>
 </div>
-
 <div class="card hidden" id="doneCard">
-  <h2 class="success">✅ Asante!</h2>
-  <p style="text-align:center">Kura yako imepokelewa. Huwezi kupiga tena.</p>
+  <h2 style="text-align:center;color:#16a34a">✅ Asante! Kura imepokelewa.</h2>
   <button onclick="showResults()">Angalia Matokeo</button>
 </div>
-
 <div class="card hidden" id="resultCard">
-  <h2>📊 Matokeo ya Moja kwa Moja</h2>
+  <h2>📊 Matokeo</h2>
   <div id="results"></div>
   <button onclick="location.reload()">Rudi</button>
 </div>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
@@ -61,12 +56,8 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-
-let myReg = "", myName = "", selected = {};
-let allCandidates = [];
-
-// WAGOMBEA WA MFANO - Wataingia wenyewe mara ya kwanza
-const defaultCandidates = [
+let myReg="", myName="", selected={}, allCandidates=[];
+const defaultCandidates=[
   {name:"Baraka Mushi", position:"Rais", votes:0},
   {name:"Neema John", position:"Rais", votes:0},
   {name:"Kelvin Sam", position:"Makamu Rais", votes:0},
@@ -74,89 +65,74 @@ const defaultCandidates = [
   {name:"Joshua Paulo", position:"Katibu", votes:0},
   {name:"Grace Daniel", position:"Katibu", votes:0}
 ];
-
 async function ensureCandidates(){
   const snap = await db.collection('candidates').get();
-  if(snap.empty){
-    for(let c of defaultCandidates){ await db.collection('candidates').add(c); }
-  }
+  if(snap.empty){ for(let c of defaultCandidates){ await db.collection('candidates').add(c); } }
 }
-
 async function login(){
-  myName = document.getElementById('name').value.trim();
-  myReg = document.getElementById('reg').value.trim().toUpperCase();
-  if(!myName || !myReg){ document.getElementById('loginMsg').innerText="Jaza jina na namba ya usajili"; return; }
-  await ensureCandidates();
-  const doc = await db.collection('students').doc(myReg).get();
-  if(doc.exists && doc.data().voted){
-    document.getElementById('loginMsg').innerText="Umesha pigia kura! Huwezi kupiga tena.";
-    return;
-  }
-  await db.collection('students').doc(myReg).set({name:myName, reg:myReg, voted:false}, {merge:true});
-  document.getElementById('voterName').innerText = myName;
-  document.getElementById('loginCard').classList.add('hidden');
-  document.getElementById('voteCard').classList.remove('hidden');
-  loadCandidates();
+  try{
+    myName=document.getElementById('name').value.trim();
+    myReg=document.getElementById('reg').value.trim().toUpperCase();
+    if(!myName||!myReg){ document.getElementById('loginMsg').innerText="Jaza jina na namba ya usajili"; return; }
+    document.getElementById('loginMsg').innerText="Inaingia... subiri...";
+    await ensureCandidates();
+    const doc = await db.collection('students').doc(myReg).get();
+    if(doc.exists && doc.data().voted){ document.getElementById('loginMsg').innerText="Umesha pigia kura!"; return; }
+    await db.collection('students').doc(myReg).set({name:myName, reg:myReg, voted:false},{merge:true});
+    document.getElementById('voterName').innerText=myName;
+    document.getElementById('loginCard').classList.add('hidden');
+    document.getElementById('voteCard').classList.remove('hidden');
+    loadCandidates();
+  }catch(e){ document.getElementById('loginMsg').innerText="Kosa: "+e.message+" - Hakikisha Firestore Database umeunda na Rules umeweka allow read,write"; }
 }
-
 async function loadCandidates(){
-  const snap = await db.collection('candidates').get();
-  allCandidates = [];
-  snap.forEach(d=> allCandidates.push({id:d.id, ...d.data()}));
-  const positions = [...new Set(allCandidates.map(c=>c.position))];
-  let html = "";
-  positions.forEach(pos=>{
-    html += <div class="pos"><h3>${pos}</h3>;
+  const snap=await db.collection('candidates').get();
+  allCandidates=[]; snap.forEach(d=>allCandidates.push({id:d.id,...d.data()}));
+  const positions=[...new Set(allCandidates.map(c=>c.position))];
+  let html=""; positions.forEach(pos=>{
+    html+=`<div><h3>${pos}</h3>`;
     allCandidates.filter(c=>c.position===pos).forEach(c=>{
-      html += <div class="cand" id="cand-${c.id}" onclick="select('${pos}','${c.id}')"><span><b>${c.name}</b></span><span>Chagua</span></div>;
-    });
-    html += </div>;
+      html+=`<div class="cand" id="cand-${c.id}" onclick="select('${pos}','${c.id}')"><b>${c.name}</b> - Chagua</div>`;
+    }); html+=`</div>`;
   });
-  document.getElementById('positions').innerHTML = html;
+  document.getElementById('positions').innerHTML=html;
 }
-
-function select(pos, id){
+function select(pos,id){
   selected[pos]=id;
-  document.querySelectorAll('.cand').forEach(el=>el.classList.remove('selected'));
-  // weka rangi kwa waliochaguliwa
   for(let p in selected){ document.getElementById('cand-'+selected[p]).classList.add('selected'); }
 }
-
 async function submitVote(){
-  const positions = [...new Set(allCandidates.map(c=>c.position))];
-  if(Object.keys(selected).length < positions.length){
-    document.getElementById('voteMsg').innerText="Tafadhali chagua mgombea kwa kila nafasi.";
-    document.getElementById('voteMsg').style.color="red"; return;
-  }
+  const positions=[...new Set(allCandidates.map(c=>c.position))];
+  if(Object.keys(selected).length<positions.length){ document.getElementById('voteMsg').innerText="Chagua mgombea kwa kila nafasi"; return; }
   for(let pos in selected){
-    const cand = allCandidates.find(c=>c.id===selected[pos]);
+    const cand=allCandidates.find(c=>c.id===selected[pos]);
     await db.collection('candidates').doc(cand.id).update({votes: firebase.firestore.FieldValue.increment(1)});
   }
   await db.collection('students').doc(myReg).update({voted:true});
   document.getElementById('voteCard').classList.add('hidden');
   document.getElementById('doneCard').classList.remove('hidden');
 }
-
 async function showResults(){
-  await ensureCandidates();
-  const snap = await db.collection('candidates').get();
-  let list=[]; snap.forEach(d=>list.push(d.data()));
-  const positions = [...new Set(list.map(c=>c.position))];
-  let html="";
-  positions.forEach(pos=>{
-    html+=<h3>${pos}</h3>;
-    let arr = list.filter(c=>c.position===pos);
-    let total = arr.reduce((s,c)=>s+(c.votes||0),0) || 1;
-    arr.sort((a,b)=>(b.votes||0)-(a.votes||0)).forEach(c=>{
-      let pct = Math.round(((c.votes||0)/total)*100);
-      html+=<div><b>${c.name}</b> - ${c.votes||0} kura (${pct}%)<div class="result-bar"><div class="result-fill" style="width:${pct}%"></div></div></div>;
+  try{
+    await ensureCandidates();
+    const snap=await db.collection('candidates').get();
+    let list=[]; snap.forEach(d=>list.push(d.data()));
+    const positions=[...new Set(list.map(c=>c.position))];
+    let html=""; positions.forEach(pos=>{
+      html+=`<h3>${pos}</h3>`;
+      let arr=list.filter(c=>c.position===pos);
+      let total=arr.reduce((s,c)=>s+(c.votes||0),0)||1;
+      arr.sort((a,b)=>(b.votes||0)-(a.votes||0)).forEach(c=>{
+        let pct=Math.round(((c.votes||0)/total)*100);
+        html+=`<div><b>${c.name}</b> - ${c.votes||0} kura (${pct}%)<div class="result-bar"><div class="result-fill" style="width:${pct}%"></div></div></div>`;
+      });
     });
-  });
-  document.getElementById('results').innerHTML=html;
-  document.getElementById('loginCard').classList.add('hidden');
-  document.getElementById('voteCard').classList.add('hidden');
-  document.getElementById('doneCard').classList.add('hidden');
-  document.getElementById('resultCard').classList.remove('hidden');
+    document.getElementById('results').innerHTML=html;
+    document.getElementById('loginCard').classList.add('hidden');
+    document.getElementById('voteCard').classList.add('hidden');
+    document.getElementById('doneCard').classList.add('hidden');
+    document.getElementById('resultCard').classList.remove('hidden');
+  }catch(e){ alert("Kosa: "+e.message); }
 }
 </script>
 </body>
