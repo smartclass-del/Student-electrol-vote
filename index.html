@@ -5,7 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TUMA - Uchaguzi</title>
 <style>
-*{box-sizing:border-box} body{font-family:Arial,sans-serif;background:#f0f4f8;margin:0;padding:15px}
+*{box-sizing:border-box} body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;margin:0;padding:0}
+/* === MUONEKANO MPYA - LOGIN PAGE NZIMA NA PICHA === */
+#loginCard{
+  max-width:100%; margin:0; border-radius:0; box-shadow:none; padding:0;
+  min-height:100vh;
+  background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=1200&q=80') center/cover no-repeat;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+}
+.login-hero{ text-align:center; color:#fff; padding:20px 15px 5px; }
+.login-hero .logo{ font-size:70px; margin:0; filter:drop-shadow(0 4px 10px rgba(0,0,0,.5)); }
+.login-hero h1{ color:#fff; font-size:42px; margin:5px 0; letter-spacing:2px; text-shadow:0 2px 10px rgba(0,0,0,.6); }
+.login-hero p{ font-size:17px; opacity:.95; margin:5px 0 15px; }
+.login-box{
+  width:92%; max-width:430px; background:rgba(255,255,255,0.96); padding:28px 24px; border-radius:22px;
+  box-shadow:0 20px 50px rgba(0,0,0,.35); backdrop-filter:blur(10px);
+}
+.login-box label{ font-weight:bold; font-size:14px; color:#111827; }
+.login-box input{ border:2px solid #e5e7eb; }
+.login-box input:focus{ border-color:#16a34a; outline:none; }
+.login-box button{ padding:15px; font-size:17px; border-radius:12px; }
+.version-tag{ color:#fff; font-size:12px; opacity:.8; margin-top:12px; text-align:center; }
 .card{max-width:650px;margin:20px auto;background:#fff;padding:25px;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
 h1{text-align:center;color:#166534} input,button,select,textarea{width:100%;padding:13px;margin:8px 0;border-radius:10px;border:1px solid #ddd;font-size:16px}
 button{background:#16a34a;color:#fff;border:none;font-weight:bold;cursor:pointer}
@@ -18,27 +38,36 @@ table{width:100%;border-collapse:collapse;font-size:14px} td,th{border:1px solid
 .admin-box{background:#fef3c7;padding:15px;border-radius:10px;margin-top:15px}
 .result-box{background:#f0fdf4;border:2px solid #16a34a;padding:15px;border-radius:12px}
 .student-box{background:#eff6ff;border:2px solid #2563eb;padding:15px;border-radius:12px}
+/* Vote / Result pages pia ziwe na picha kidogo juu */
+#voteCard, #doneCard, #resultCard{ border-top:6px solid #16a34a; }
 </style>
 </head>
 <body>
 <div class="card" id="loginCard">
-  <h1>🗳️ TUMA</h1>
-  <p style="text-align:center">Uchaguzi wa Viongozi wa Wanafunzi<br><small>Version V7</small></p>
-  <label>Jina lako:</label>
-  <input id="name" placeholder="Mf: Tina">
-  <label>Namba ya Usajili:</label>
-  <input id="reg" placeholder="Mf: TUMA/ODIT/25/313756">
-  <button onclick="login()">Ingia Kupiga Kura</button>
-  <p id="loginMsg" style="color:red;text-align:center;font-weight:bold"></p>
-  <hr>
-  <button onclick="showResults()" style="background:#2563eb">Angalia Matokeo</button>
-  <div class="admin-box">
-    <b>🔐 Kwa Msimamizi (Admin)</b>
-    <input id="adminPass" type="password" placeholder="Password ya Admin">
-    <button onclick="adminLogin()" style="background:#111827">Ingia kama Admin</button>
-    <p id="adminMsg" style="color:red;text-align:center"></p>
-    <small>Password: <b>admin123</b></small>
+  <div class="login-hero">
+    <p class="logo">🗳️</p>
+    <h1>TUMA</h1>
+    <p><b>Uchaguzi wa Viongozi wa Wanafunzi</b><br>Chagua Kiongozi Unayemtaka • Kura Yako Ni Siri Yako</p>
   </div>
+  <div class="login-box">
+    <div style="text-align:center;margin-bottom:10px"><img src="https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=400&q=80" style="width:100%;height:110px;object-fit:cover;border-radius:14px" alt="Kupiga Kura"></div>
+    <label>👤 Jina lako:</label>
+    <input id="name" placeholder="Mf: Tina">
+    <label>🎓 Namba ya Usajili:</label>
+    <input id="reg" placeholder="Mf: TUMA/ODIT/25/313756">
+    <button onclick="login()">🗳️ Ingia Kupiga Kura</button>
+    <p id="loginMsg" style="color:red;text-align:center;font-weight:bold"></p>
+    <hr>
+    <button onclick="showResults()" style="background:#2563eb">📊 Angalia Matokeo</button>
+    <div class="admin-box">
+      <b>🔐 Kwa Msimamizi (Admin)</b>
+      <input id="adminPass" type="password" placeholder="Password ya Admin">
+      <button onclick="adminLogin()" style="background:#111827">Ingia kama Admin</button>
+      <p id="adminMsg" style="color:red;text-align:center"></p>
+      <small>Password: <b>admin123</b></small>
+    </div>
+  </div>
+  <p class="version-tag">Version V8 • Tina & Godfrey Wamesajiliwa • Mfumo wa TUMA</p>
 </div>
 <div class="card hidden" id="voteCard">
   <h2>Karibu, <span id="voterName"></span> ✅ Umethibitishwa</h2>
@@ -57,7 +86,7 @@ table{width:100%;border-collapse:collapse;font-size:14px} td,th{border:1px solid
   <button onclick="location.reload()">Rudi</button>
 </div>
 <div class="card hidden" id="adminCard">
-  <h2>🔐 Admin Dashboard - V7</h2>
+  <h2>🔐 Admin Dashboard - V8</h2>
   <div class="result-box"><h3 style="margin-top:0">📊 MATOKEO</h3><div id="adminResults">Inapakia...</div><p id="totalVotes" style="font-weight:bold"></p></div>
   <hr>
   <div class="student-box">
@@ -128,23 +157,4 @@ async function loadAdmin(){
   document.getElementById('adminResults').innerHTML=html; document.getElementById('totalVotes').innerText="Jumla: "+totalAll+" | Wanafunzi: "+allowed.length;
   let candHtml=""; list.forEach(c=>{ candHtml+=`<div style="display:flex;justify-content:space-between;border:1px solid #ddd;padding:8px;border-radius:8px;margin:4px 0"><span>${c.name} - ${c.position} (${c.votes||0})</span><button class="btn-small" style="background:#dc2626" onclick="deleteCandidate('${c.id}')">❌</button></div>`; }); document.getElementById('adminCandList').innerHTML=candHtml;
   let aHtml=`<table><tr><th>Jina</th><th>Reg</th><th></th></tr>`; allowed.forEach(s=>{ aHtml+=`<tr><td>${s.name}</td><td>${s.reg}</td><td><button class="btn-small" style="background:#dc2626" onclick="deleteAllowed('${s.id||cleanId(s.reg)}')">❌</button></td></tr>`; }); aHtml+=`</table><p><b>Jumla:</b> ${allowed.length} wanafunzi</p>`; document.getElementById('allowedList').innerHTML=aHtml;
-  if(voterDocs.length===0){ document.getElementById('votersList').innerHTML="Bado hakuna aliyepiga."; } else { let vHtml=`<table><tr><th>Jina</th><th>Reg</th><th></th></tr>`; voterDocs.forEach(s=>{ vHtml+=`<tr><td>${s.name||''}</td><td>${s.reg||''}</td><td>${s.voted?'✅':'❌'} <button class="btn-small" style="background:#dc2626" onclick="deleteVoter('${s.id}')">❌</button></td></tr>`; }); vHtml+=`</table>`; document.getElementById('votersList').innerHTML=vHtml; }
-}
-async function addStudent(){ const n=document.getElementById('newStudentName').value.trim(); const r=document.getElementById('newStudentReg').value.trim().toUpperCase(); if(!n||!r){ alert("Jaza jina na namba"); return; } try{ await db.collection('allowedStudents').doc(cleanId(r)).set({name:n,reg:r}); }catch(e){ alert("Kosa Firebase, hakikisha Rules zimefunguliwa"); return; } document.getElementById('studentActionMsg').innerText="✅ "+n+" amesajiliwa!"; document.getElementById('newStudentName').value=""; document.getElementById('newStudentReg').value=""; loadAdmin(); }
-async function addBulkStudents(){
-  const txt=document.getElementById('bulkStudents').value.trim();
-  if(!txt){ alert("Andika orodha kwanza kwenye boksi kubwa"); return; }
-  let lines=txt.split("\n"); let count=0; let failed=0;
-  for(let line of lines){ let parts=line.split(","); if(parts.length<2) continue; let n=parts[0].trim(); let r=parts[1].trim().toUpperCase(); if(!n||!r) continue; try{ await db.collection('allowedStudents').doc(cleanId(r)).set({name:n,reg:r}); count++; }catch(e){ failed++; } }
-  if(failed>0){ document.getElementById('studentActionMsg').innerText="⚠️ Wamesajiliwa "+count+", wameshindwa "+failed+" - Fungua Firebase Rules kwanza!"; } else { document.getElementById('studentActionMsg').innerText="✅ Wanafunzi "+count+" wote wamesajiliwa!"; }
-  document.getElementById('bulkStudents').value=""; loadAdmin();
-}
-async function deleteAllowed(id){ if(!confirm("Futa huyu mwanafunzi?")) return; try{ await db.collection('allowedStudents').doc(id).delete(); }catch(e){} loadAdmin(); }
-async function addCandidate(){ const n=document.getElementById('newCandName').value.trim(); const pos=document.getElementById('newCandPos').value; if(!n){ alert("Andika jina"); return; } try{ await db.collection('candidates').add({name:n,position:pos,votes:0}); }catch(e){ alert("Kosa: "+e.message); return; } document.getElementById('adminActionMsg').innerText="✅ "+n+" ameongezwa!"; document.getElementById('newCandName').value=""; loadAdmin(); }
-async function deleteCandidate(id){ if(!confirm("Futa huyu?")) return; if(id.startsWith("local")) return; await db.collection('candidates').doc(id).delete(); loadAdmin(); }
-async function deleteVoter(id){ if(!confirm("Futa huyu?")) return; await db.collection('students').doc(id).delete(); loadAdmin(); }
-async function deleteAllVoters(){ if(!confirm("Futa waliopiga wote?")) return; const sSnap=await db.collection('students').get(); for(let d of sSnap.docs){ await db.collection('students').doc(d.id).delete(); } localStorage.clear(); alert("Wamefutwa!"); loadAdmin(); }
-async function resetVotes(){ if(!confirm("Futa kura na waliopiga?")) return; const snap=await db.collection('candidates').get(); for(let d of snap.docs){ await db.collection('candidates').doc(d.id).update({votes:0}); } const sSnap=await db.collection('students').get(); for(let d of sSnap.docs){ await db.collection('students').doc(d.id).delete(); } localStorage.clear(); alert("Imesafishwa!"); loadAdmin(); }
-</script>
-</body>
-</html>
+  if(voterDocs.length===0){ document.getElementById('votersList').innerHTML
