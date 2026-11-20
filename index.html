@@ -6,13 +6,15 @@
 <title>TUMA - Uchaguzi</title>
 <style>
 *{box-sizing:border-box} body{font-family:Arial,sans-serif;background:#f0f4f8;margin:0;padding:15px}
-.card{max-width:600px;margin:20px auto;background:#fff;padding:25px;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
-h1{text-align:center;color:#166534} input,button{width:100%;padding:13px;margin:8px 0;border-radius:10px;border:1px solid #ddd;font-size:16px}
+.card{max-width:650px;margin:20px auto;background:#fff;padding:25px;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
+h1{text-align:center;color:#166534} h2,h3{color:#111} input,button,select{width:100%;padding:13px;margin:8px 0;border-radius:10px;border:1px solid #ddd;font-size:16px}
 button{background:#16a34a;color:#fff;border:none;font-weight:bold;cursor:pointer}
 .cand{border:1px solid #ddd;padding:12px;border-radius:10px;margin:8px 0;cursor:pointer}
 .cand.selected{border:2px solid #16a34a;background:#f0fdf4}
 .result-bar{height:12px;background:#e5e7eb;border-radius:10px;overflow:hidden;margin:5px 0}
 .result-fill{height:100%;background:#16a34a} .hidden{display:none}
+table{width:100%;border-collapse:collapse;font-size:14px} td,th{border:1px solid #ddd;padding:8px;text-align:left}
+.admin-box{background:#fef3c7;padding:15px;border-radius:10px;margin-top:15px}
 </style>
 </head>
 <body>
@@ -27,22 +29,52 @@ button{background:#16a34a;color:#fff;border:none;font-weight:bold;cursor:pointer
   <p id="loginMsg" style="color:red;text-align:center"></p>
   <hr>
   <button onclick="showResults()" style="background:#2563eb">Angalia Matokeo</button>
+  <div class="admin-box">
+    <b>🔐 Kwa Msimamizi (Admin)</b>
+    <input id="adminPass" type="password" placeholder="Password ya Admin">
+    <button onclick="adminLogin()" style="background:#111827">Ingia kama Admin</button>
+    <p id="adminMsg" style="color:red;text-align:center"></p>
+    <small>Password ya kwanza: <b>admin123</b></small>
+  </div>
 </div>
+
 <div class="card hidden" id="voteCard">
   <h2>Karibu, <span id="voterName"></span></h2>
   <div id="positions"></div>
   <button onclick="submitVote()">✅ Tuma Kura Yangu</button>
   <p id="voteMsg" style="text-align:center;color:red"></p>
 </div>
+
 <div class="card hidden" id="doneCard">
   <h2 style="text-align:center;color:#16a34a">✅ Asante! Kura imepokelewa.</h2>
   <button onclick="showResults()">Angalia Matokeo</button>
 </div>
+
 <div class="card hidden" id="resultCard">
   <h2>📊 Matokeo</h2>
   <div id="results"></div>
   <button onclick="location.reload()">Rudi</button>
 </div>
+
+<div class="card hidden" id="adminCard">
+  <h2>🔐 Admin Dashboard</h2>
+  <p>Karibu Admin! Hapa unadhibiti uchaguzi wote.</p>
+  <h3>📊 Matokeo ya Sasa</h3>
+  <div id="adminResults"></div>
+  <hr>
+  <h3>👥 Waliopiga Kura</h3>
+  <div id="votersList">Inapakia...</div>
+  <hr>
+  <h3>➕ Ongeza Mgombea Mpya</h3>
+  <input id="newCandName" placeholder="Jina la mgombea">
+  <select id="newCandPos"><option>Rais</option><option>Makamu Rais</option><option>Katibu</option><option>Mhazini</option></select>
+  <button onclick="addCandidate()" style="background:#2563eb">Ongeza Mgombea</button>
+  <hr>
+  <button onclick="resetVotes()" style="background:#dc2626">🗑️ Futa Kura Zote (Anza Upya)</button>
+  <button onclick="location.reload()" style="background:#6b7280">Toka Admin</button>
+  <p id="adminActionMsg" style="text-align:center;color:green"></p>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
@@ -56,6 +88,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const ADMIN_PASS = "admin123";
 let myReg="", myDocId="", myName="", selected={}, allCandidates=[];
 const defaultCandidates=[
   {name:"Baraka Mushi", position:"Rais", votes:0},
@@ -91,10 +124,10 @@ async function loadCandidates(){
   allCandidates=[]; snap.forEach(d=>allCandidates.push({id:d.id,...d.data()}));
   const positions=[...new Set(allCandidates.map(c=>c.position))];
   let html=""; positions.forEach(pos=>{
-    html+=`<div><h3>${pos}</h3>`;
+    html+=<div><h3>${pos}</h3>;
     allCandidates.filter(c=>c.position===pos).forEach(c=>{
-      html+=`<div class="cand" id="cand-${c.id}" onclick="select('${pos}','${c.id}')"><b>${c.name}</b> - Chagua</div>`;
-    }); html+=`</div>`;
+      html+=<div class="cand" id="cand-${c.id}" onclick="select('${pos}','${c.id}')"><b>${c.name}</b> - Chagua</div>;
+    }); html+=</div>;
   });
   document.getElementById('positions').innerHTML=html;
 }
@@ -117,12 +150,12 @@ async function showResults(){
     let list=[]; snap.forEach(d=>list.push(d.data()));
     const positions=[...new Set(list.map(c=>c.position))];
     let html=""; positions.forEach(pos=>{
-      html+=`<h3>${pos}</h3>`;
+      html+=<h3>${pos}</h3>;
       let arr=list.filter(c=>c.position===pos);
       let total=arr.reduce((s,c)=>s+(c.votes||0),0)||1;
       arr.sort((a,b)=>(b.votes||0)-(a.votes||0)).forEach(c=>{
         let pct=Math.round(((c.votes||0)/total)*100);
-        html+=`<div><b>${c.name}</b> - ${c.votes||0} kura (${pct}%)<div class="result-bar"><div class="result-fill" style="width:${pct}%"></div></div></div>`;
+        html+=<div><b>${c.name}</b> - ${c.votes||0} kura (${pct}%)<div class="result-bar"><div class="result-fill" style="width:${pct}%"></div></div></div>;
       });
     });
     document.getElementById('results').innerHTML=html;
@@ -131,6 +164,50 @@ async function showResults(){
     document.getElementById('doneCard').classList.add('hidden');
     document.getElementById('resultCard').classList.remove('hidden');
   }catch(e){ alert("Kosa: "+e.message); }
+}
+async function adminLogin(){
+  const p=document.getElementById('adminPass').value;
+  if(p!==ADMIN_PASS){ document.getElementById('adminMsg').innerText="Password si sahihi!"; return; }
+  document.getElementById('loginCard').classList.add('hidden');
+  document.getElementById('adminCard').classList.remove('hidden');
+  loadAdmin();
+}
+async function loadAdmin(){
+  await ensureCandidates();
+  const snap=await db.collection('candidates').get();
+  let list=[]; snap.forEach(d=>list.push({id:d.id,...d.data()}));
+  const positions=[...new Set(list.map(c=>c.position))];
+  let html=""; positions.forEach(pos=>{
+    html+=<h4>${pos}</h4>;
+    list.filter(c=>c.position===pos).sort((a,b)=>(b.votes||0)-(a.votes||0)).forEach(c=>{
+      html+=<div>${c.name} - <b>${c.votes||0} kura</b></div>;
+    });
+  });
+  document.getElementById('adminResults').innerHTML=html;
+  const sSnap=await db.collection('students').get();
+  let vHtml=<table><tr><th>Jina</th><th>Reg</th><th>Amepiga?</th></tr>;
+  let count=0, voted=0;
+  sSnap.forEach(d=>{ let s=d.data(); count++; if(s.voted) voted++; vHtml+=<tr><td>${s.name||''}</td><td>${s.reg||''}</td><td>${s.voted?'✅ Ndiyo':'❌ Bado'}</td></tr>; });
+  vHtml+=</table><p><b>Jumla walioingia:</b> ${count} | <b>Walioshapiga:</b> ${voted}</p>;
+  document.getElementById('votersList').innerHTML=vHtml;
+}
+async function addCandidate(){
+  const n=document.getElementById('newCandName').value.trim();
+  const pos=document.getElementById('newCandPos').value;
+  if(!n){ alert("Andika jina la mgombea"); return; }
+  await db.collection('candidates').add({name:n, position:pos, votes:0});
+  document.getElementById('adminActionMsg').innerText="Mgombea "+n+" ameongezwa!";
+  document.getElementById('newCandName').value="";
+  loadAdmin();
+}
+async function resetVotes(){
+  if(!confirm("Una uhakika unataka kufuta kura ZOTE?")) return;
+  const snap=await db.collection('candidates').get();
+  for(let d of snap.docs){ await db.collection('candidates').doc(d.id).update({votes:0}); }
+  const sSnap=await db.collection('students').get();
+  for(let d of sSnap.docs){ await db.collection('students').doc(d.id).update({voted:false}); }
+  alert("Kura zote zimefutwa!");
+  loadAdmin();
 }
 </script>
 </body>
