@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html lang="sw">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TUMA - Uchaguzi V11</title>
+<title>TUMA - Election V12</title>
 <style>
-*{box-sizing:border-box} body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;margin:0;padding:0}
-/* 6. LOGIN MZURI - PICHA KUBWA YA CHUO */
-#loginCard{max-width:100%;margin:0;border-radius:0;box-shadow:none;padding:0;min-height:100vh;background:linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.65)),url('bg.jpg') center/cover no-repeat;display:flex;flex-direction:column;justify-content:center;align-items:center}
-.login-hero{text-align:center;color:#fff;padding:20px 15px 5px} .login-hero .logo{font-size:70px;margin:0} .login-hero h1{color:#fff;font-size:46px;margin:5px 0;letter-spacing:3px;text-shadow:0 2px 10px rgba(0,0,0,.6)} .login-hero p{font-size:17px;opacity:.95;margin:5px 0 15px}
-.login-box{width:92%;max-width:430px;background:rgba(255,255,255,0.97);padding:28px 24px;border-radius:22px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
-.login-box label{font-weight:bold;font-size:14px;color:#111827} .login-box input{border:2px solid #e5e7eb} .login-box input:focus{border-color:#16a34a;outline:none} .login-box button{padding:15px;font-size:17px;border-radius:12px}
+*{box-sizing:border-box} body{font-family:'Segoe UI',Arial,sans-serif;background:#0f172a;margin:0;padding:0}
+/* 1. FULL SCREEN - HAKUNA KIKARATASI */
+#loginCard{max-width:100%;width:100%;min-height:100vh;margin:0;border-radius:0;box-shadow:none;padding:0;background:linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.75)),url('bg.jpg') center/cover no-repeat;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.login-hero{text-align:center;color:#fff;padding:20px 20px 5px;width:100%;max-width:700px} .login-hero .logo{font-size:72px;margin:0} .login-hero h1{color:#fff;font-size:52px;margin:5px 0;letter-spacing:4px;text-shadow:0 2px 12px rgba(0,0,0,.7)} .login-hero p{font-size:18px;opacity:.95;margin:5px 0 15px;line-height:1.5}
+.login-box{width:100%;max-width:700px;background:transparent;padding:10px 25px 25px;border-radius:0;box-shadow:none}
+.login-box label{font-weight:bold;font-size:15px;color:#fff;display:block;margin-top:14px;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.login-box input{background:rgba(255,255,255,0.95);border:2px solid transparent}
+.login-box input:focus{border-color:#16a34a;outline:none}
+.login-box button{padding:15px;font-size:17px;border-radius:12px}
 .version-tag{color:#fff;font-size:12px;opacity:.8;margin-top:12px;text-align:center}
 .card{max-width:680px;margin:20px auto;background:#fff;padding:25px;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
 h1{text-align:center;color:#166534} input,button,select,textarea{width:100%;padding:13px;margin:8px 0;border-radius:10px;border:1px solid #ddd;font-size:16px}
@@ -23,99 +26,94 @@ button:disabled{background:#9ca3af;cursor:not-allowed}
 .cand-info{flex:1}
 .ticket{display:flex;gap:10px;align-items:center}
 .ticket img{width:72px;height:72px;object-fit:cover;border-radius:50%;border:3px solid #16a34a}
-.ticket .vs{font-weight:900;font-size:22px;color:#f97316}
 .result-bar{height:12px;background:#e5e7eb;border-radius:10px;overflow:hidden;margin:5px 0} .result-fill{height:100%;background:#16a34a} .hidden{display:none}
 table{width:100%;border-collapse:collapse;font-size:14px} td,th{border:1px solid #ddd;padding:8px;text-align:left}
-.admin-box{background:#fef3c7;padding:15px;border-radius:10px;margin-top:15px} .result-box{background:#f0fdf4;border:2px solid #16a34a;padding:15px;border-radius:12px} .student-box{background:#eff6ff;border:2px solid #2563eb;padding:15px;border-radius:12px}
+.admin-box{background:rgba(255,255,255,0.95);padding:15px;border-radius:14px;margin-top:15px} .result-box{background:#f0fdf4;border:2px solid #16a34a;padding:15px;border-radius:12px} .student-box{background:#eff6ff;border:2px solid #2563eb;padding:15px;border-radius:12px}
 #voteCard,#doneCard,#resultCard{border-top:6px solid #16a34a}
-.fix-box{background:#fff7ed;border:2px dashed #f97316;padding:12px;border-radius:12px;margin-top:12px;text-align:center}
-.countdown{ background:#111827;color:#fff;padding:12px;border-radius:12px;text-align:center;font-weight:800;margin:10px 0 }
+.fix-box{background:rgba(255,255,255,0.92);border:2px dashed #f97316;padding:12px;border-radius:12px;margin-top:12px;text-align:center}
+.countdown{ background:#166534;color:#fff;padding:12px;border-radius:12px;text-align:center;font-weight:800;margin:10px 0 }
 .caption{font-size:13px;color:#475569;font-style:italic;margin:4px 0 0}
+.white-btn{background:rgba(255,255,255,0.95)!important;color:#111827!important}
 </style>
 </head>
 <body>
 <div class="card" id="loginCard">
-  <div class="login-hero"><p class="logo">🗳️</p><h1>TUMA</h1><p><b>Uchaguzi wa Viongozi wa Wanafunzi</b><br>Chagua Kiongozi Unayemtaka • Kura Yako Ni Siri Yako</p></div>
+  <div class="login-hero"><p class="logo">🗳️</p><h1>TUMA</h1><p><b>Student Leaders Election</b><br>Choose Your Leader • Your Vote Is Your Secret</p></div>
   <div class="login-box">
-    <div style="text-align:center;margin-bottom:10px"><img src="bg.jpg" style="width:100%;height:150px;object-fit:cover;border-radius:14px" alt="TUMA - Chuo" onerror="this.style.display='none'"></div>
-    <div id="countdownLogin" class="countdown" style="background:#166534">⏳ Inapakia muda wa kupiga kura...</div>
-    <label>👤 Jina lako:</label>
-    <input id="name" placeholder="Mf: Godfrey Fadhili" autocomplete="off">
-    <label>🎓 Namba ya Usajili:</label>
-    <input id="reg" placeholder="Mf: TUMA/ODIT/25/317377" autocomplete="off">
-    <!-- 8. PASSWORD -->
-    <label>🔑 Password Yako:</label>
-    <input id="password" type="password" placeholder="Tengeneza / Andika Password yako">
-    <div style="display:flex;gap:8px"><button onclick="togglePass2('password')" style="background:#fff;color:#111827;border:1px solid #ddd;font-size:13px;padding:8px">👁️ Onyesha</button><button onclick="showForgot()" style="background:#fff;color:#dc2626;border:1px solid #ddd;font-size:13px;padding:8px">Nimesahau Password?</button></div>
-    <div id="forgotBox" class="hidden" style="background:#fef2f2;padding:10px;border-radius:10px;margin-top:8px">
-      <b>🔐 Tengeneza Password Mpya</b><br><small>Andika Jina + Reg No sahihi kama ulivyosajiliwa, kisha Password mpya. <b>Kama ulishapiga kura, Reg No yako bado itasoma Imepiga kura</b> - huwezi kupiga tena.</small>
-      <input id="newPassInput" type="password" placeholder="Password Mpya">
-      <button onclick="resetPassword()" style="background:#dc2626">✅ Badilisha Password</button>
+    <div id="countdownLogin" class="countdown">Loading voting time...</div>
+    <label>👤 Your Full Name:</label>
+    <input id="name" placeholder="Enter your full name" autocomplete="off">
+    <label>🎓 Registration Number:</label>
+    <input id="reg" placeholder="Enter registration number" autocomplete="off">
+    <label>🔑 Your Password:</label>
+    <input id="password" type="password" placeholder="Create / Enter your password">
+    <div style="display:flex;gap:8px"><button onclick="togglePass2('password')" class="white-btn" style="font-size:13px;padding:10px">👁️ Show Password</button><button onclick="showForgot()" class="white-btn" style="font-size:13px;padding:10px;color:#dc2626">Forgot Password?</button></div>
+    <div id="forgotBox" class="hidden" style="background:#fff;padding:12px;border-radius:12px;margin-top:10px">
+      <b>🔐 Create New Password</b><br><small>Enter your correct Name + Registration Number, then new password. <b>If you already voted, your Reg No will still show as Voted</b> - you cannot vote again.</small>
+      <input id="newPassInput" type="password" placeholder="New password">
+      <button onclick="resetPassword()" style="background:#dc2626">✅ Change Password</button>
       <p id="forgotMsg" style="font-size:13px"></p>
     </div>
-    <button onclick="login()" id="loginBtn">🗳️ Ingia Kupiga Kura</button>
-    <p id="loginMsg" style="color:red;text-align:center;font-weight:bold"></p>
-    <hr>
-    <button onclick="showResults()" style="background:#2563eb">📊 Angalia Matokeo</button>
+    <button onclick="login()" id="loginBtn">🗳️ Login to Vote</button>
+    <p id="loginMsg" style="color:#fca5a5;text-align:center;font-weight:bold;text-shadow:0 1px 4px rgba(0,0,0,.7)"></p>
+    <hr style="border-color:rgba(255,255,255,.4)">
+    <button onclick="showResults()" style="background:#2563eb">📊 View Results</button>
     <div class="admin-box">
-      <b>🔐 Kwa Msimamizi (Admin)</b>
-      <input id="adminPass" type="password" placeholder="Password ya Admin - admin123">
-      <button onclick="adminLogin()" style="background:#111827">Ingia kama Admin</button>
-      <button onclick="togglePass()" style="background:#fff;color:#111827;border:1px solid #ddd;font-size:13px;padding:8px">👁️ Onyesha Password</button>
+      <b>🔐 For Admin</b>
+      <input id="adminPass" type="password" placeholder="Admin password">
+      <button onclick="adminLogin()" style="background:#111827">Login as Admin</button>
+      <button onclick="togglePass()" style="background:#fff;color:#111827;border:1px solid #ddd;font-size:13px;padding:8px">👁️ Show Password</button>
       <p id="adminMsg" style="color:red;text-align:center"></p>
-      <small>Password: <b>admin123</b></small>
     </div>
     <div class="fix-box">
-      <b>⚠️ Unashindwa kuingia?</b><br><small>Kama Admin amefuta waliopiga, mfumo utaanza upya. Usifute kumbukumbu ya simu pekee - Admin ndiye anaefuta Server.</small><br>
-      <button onclick="clearMyPhone()" style="background:#f97316;margin-top:8px">🗑️ Futa Kumbukumbu ya Simu Hii & Jaribu Tena</button>
+      <b>⚠️ Having trouble logging in?</b><br><small>If Admin has cleared voters, the system will restart. Do not clear phone memory only - Admin clears from Server.</small><br>
+      <button onclick="clearMyPhone()" style="background:#f97316;margin-top:8px">🗑️ Clear This Phone Memory & Try Again</button>
       <p id="clearMsg" style="font-size:13px;color:green"></p>
     </div>
   </div>
-  <p class="version-tag">Version V11 • Excel + Ticket + Time + Password</p>
+  <p class="version-tag">Version V12 • Full Screen • English</p>
 </div>
-<div class="card hidden" id="voteCard"><h2>Karibu, <span id="voterName"></span> ✅ Umethibitishwa</h2><div id="countdownVote" class="countdown"></div><p id="loadMsg">Inapakia wagombea...</p><div id="positions"></div><button onclick="submitVote()" id="submitBtn">✅ Tuma Kura Yangu</button><p id="voteMsg" style="text-align:center;color:red"></p></div>
-<div class="card hidden" id="doneCard"><h2 style="text-align:center;color:#16a34a">✅ Asante! Kura imepokelewa.</h2><button onclick="showResults()">Angalia Matokeo</button></div>
-<div class="card hidden" id="resultCard"><h2>📊 Matokeo</h2><p id="resultNote" style="font-size:13px;color:#666"></p><div id="results"></div><button onclick="location.reload()">Rudi</button></div>
+<div class="card hidden" id="voteCard"><h2>Welcome, <span id="voterName"></span> ✅ Verified</h2><div id="countdownVote" class="countdown"></div><p id="loadMsg">Loading candidates...</p><div id="positions"></div><button onclick="submitVote()" id="submitBtn">✅ Submit My Vote</button><p id="voteMsg" style="text-align:center;color:red"></p></div>
+<div class="card hidden" id="doneCard"><h2 style="text-align:center;color:#16a34a">✅ Thank You! Your vote has been received.</h2><button onclick="showResults()">View Results</button></div>
+<div class="card hidden" id="resultCard"><h2>📊 Results</h2><p id="resultNote" style="font-size:13px;color:#666"></p><div id="results"></div><button onclick="location.reload()">Back</button></div>
 <div class="card hidden" id="adminCard">
-  <h2>🔐 Admin Dashboard - V11</h2>
-  <!-- 10. TIME -->
+  <h2>🔐 Admin Dashboard - V12</h2>
   <div style="background:#eff6ff;border:2px solid #2563eb;padding:15px;border-radius:12px">
-    <h3 style="margin:0">⏰ MUDA WA KUPIGA KURA</h3>
-    <label>Anza:</label><input type="datetime-local" id="voteStart">
-    <label>Maliza:</label><input type="datetime-local" id="voteEnd">
-    <button onclick="saveVoteTime()" style="background:#2563eb">💾 Weka Muda</button>
+    <h3 style="margin:0">⏰ VOTING TIME</h3>
+    <label>Start:</label><input type="datetime-local" id="voteStart">
+    <label>End:</label><input type="datetime-local" id="voteEnd">
+    <button onclick="saveVoteTime()" style="background:#2563eb">💾 Save Time</button>
     <p id="timeMsg" style="color:green;font-weight:bold"></p>
     <p id="adminCountdown" style="font-weight:bold"></p>
   </div><hr>
-  <div class="result-box"><h3 style="margin-top:0">📊 MATOKEO - Admin Tu Anaona Idadi</h3><div id="adminResults">Inapakia...</div><p id="totalVotes" style="font-weight:bold"></p></div><hr>
-  <div class="student-box"><h3 style="margin-top:0">🎓 ONGEZA WATU WENGI KWA PAMOJA - EXCEL</h3>
-    <input id="newStudentName" placeholder="Jina - Mf: Juma Peter"><input id="newStudentReg" placeholder="Namba - Mf: TUMA/ODIT/25/xxxxxx"><button onclick="addStudent()" style="background:#2563eb">➕ Msajili Huyu Mmoja</button><hr>
-    <p><b>1. Kupitia Excel (.xlsx / .csv) - MPYA:</b><br><small>Excel yako iwe na safu 2: <b>Column A = Jina, Column B = Reg No</b><br>Mf: A1: Juma Peter | B1: TUMA/ODIT/25/111111</small></p>
+  <div class="result-box"><h3 style="margin-top:0">📊 RESULTS - Only Admin Sees Numbers</h3><div id="adminResults">Loading...</div><p id="totalVotes" style="font-weight:bold"></p></div><hr>
+  <div class="student-box"><h3 style="margin-top:0">🎓 ADD MANY STUDENTS AT ONCE - EXCEL</h3>
+    <input id="newStudentName" placeholder="Full name"><input id="newStudentReg" placeholder="Registration number"><button onclick="addStudent()" style="background:#2563eb">➕ Register This One</button><hr>
+    <p><b>1. Via Excel (.xlsx / .csv):</b><br><small>Your Excel must have 2 columns: <b>Column A = Name, Column B = Reg No</b></small></p>
     <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" style="background:#fff">
-    <button onclick="uploadExcel()" style="background:#16a34a">📂 Pakia Excel & Sajili Wote</button>
+    <button onclick="uploadExcel()" style="background:#16a34a">📂 Upload Excel & Register All</button>
     <p id="excelMsg" style="font-size:13px;color:green;font-weight:bold"></p>
-    <hr><p><b>2. Kuandika hapa:</b></p><textarea id="bulkStudents" rows="6" placeholder="Juma Peter, TUMA/ODIT/25/111111&#10;Neema John, TUMA/ODIT/25/222222"></textarea><button onclick="addBulkStudents()" style="background:#1e40af">➕ Sajili Wote Hawa Kwa Pamoja</button>
-    <p id="studentActionMsg" style="text-align:center;color:green;font-weight:bold"></p><h4>Wanafunzi Waliosajiliwa Sasa:</h4><div id="allowedList"></div>
-    <button onclick="exportStudentsExcel()" style="background:#059669">⬇️ Pakua Orodha kama Excel (CSV)</button>
+    <hr><p><b>2. Type here:</b></p><textarea id="bulkStudents" rows="6" placeholder="Full Name, Registration Number"></textarea><button onclick="addBulkStudents()" style="background:#1e40af">➕ Register All These Together</button>
+    <p id="studentActionMsg" style="text-align:center;color:green;font-weight:bold"></p><h4>Registered Students Now:</h4><div id="allowedList"></div>
+    <button onclick="exportStudentsExcel()" style="background:#059669">⬇️ Download List as Excel (CSV)</button>
   </div><hr>
-  <!-- 2 + 4 + 11. TICKET + PICHA + CAPTION -->
-  <h3>➕ ONGEZA MGOMBEA - TICKET (Rais + Makamu Pamoja)</h3>
+  <h3>➕ ADD CANDIDATE - TICKET (President + Deputy Together)</h3>
   <div style="background:#f0fdf4;border:2px solid #16a34a;padding:15px;border-radius:12px">
-    <label>Rais - Jina:</label><input id="newCandName" placeholder="Mf: Baraka Mushi">
-    <label>Rais - Picha:</label><input type="file" id="presPhoto" accept="image/*">
-    <label>Makamu Rais - Jina:</label><input id="viceName" placeholder="Mf: Neema John">
-    <label>Makamu - Picha:</label><input type="file" id="vicePhoto" accept="image/*">
-    <label>Nafasi:</label><select id="newCandPos"><option value="Rais na Makamu">Rais na Makamu (Ticket)</option><option>Katibu</option><option>Mhazini</option><option>Waziri Mkuu</option></select>
-    <label>Caption / Sela (Ahadi):</label><input id="newCandCaption" placeholder="Mf: Tutaweka maji na umeme darasani!">
-    <button onclick="addCandidate()" style="background:#2563eb">➕ Ongeza Ticket Hii</button>
+    <label>President - Name:</label><input id="newCandName" placeholder="President full name">
+    <label>President - Photo:</label><input type="file" id="presPhoto" accept="image/*">
+    <label>Deputy President - Name:</label><input id="viceName" placeholder="Deputy full name">
+    <label>Deputy - Photo:</label><input type="file" id="vicePhoto" accept="image/*">
+    <label>Position:</label><select id="newCandPos"><option value="President and Deputy">President and Deputy (Ticket)</option><option>Secretary</option><option>Treasurer</option><option>Prime Minister</option></select>
+    <label>Caption / Manifesto:</label><input id="newCandCaption" placeholder="Enter manifesto / caption">
+    <button onclick="addCandidate()" style="background:#2563eb">➕ Add This Ticket</button>
     <p id="adminActionMsg" style="text-align:center;color:green"></p>
-    <small>Rais na Makamu wake wataonekana pamoja kwenye kadi moja. Mwanafunzi akibonyeza, anawachagua wote wawili kwa pamoja.</small>
+    <small>President and Deputy will appear together on one card. Student selects both together with one click.</small>
   </div>
   <div id="adminCandList"></div><hr>
-  <h3>👥 WALIOSHAPIGA KURA</h3><div id="votersList">Inapakia...</div><button onclick="deleteAllVoters()" style="background:#f97316">🗑️ Futa Waliopiga (Anza Upya - Server)</button><hr>
-  <button onclick="resetVotes()" style="background:#dc2626">🗑️ Futa Kura + Waliopiga (Anza Upya Kabisa)</button>
-  <button onclick="clearMyPhone()" style="background:#f97316">🗑️ Futa Kumbukumbu ya Simu Hii</button>
-  <button onclick="location.reload()" style="background:#6b7280">Toka Admin</button>
+  <h3>👥 PEOPLE WHO HAVE VOTED</h3><div id="votersList">Loading...</div><button onclick="deleteAllVoters()" style="background:#f97316">🗑️ Delete Voters (Restart - Server)</button><hr>
+  <button onclick="resetVotes()" style="background:#dc2626">🗑️ Delete Votes + Voters (Start Completely Fresh)</button>
+  <button onclick="clearMyPhone()" style="background:#f97316">🗑️ Clear This Phone Memory</button>
+  <button onclick="location.reload()" style="background:#6b7280">Exit Admin</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -129,91 +127,67 @@ const ADMIN_PASS="admin123";
 let myReg="",myDocId="",myName="",selected={},allCandidates=[];
 let voteTime = {start:null, end:null};
 const defaultAllowed=[{name:"Tina", reg:"TUMA/ODIT/25/313756"},{name:"Godfrey Fadhili", reg:"TUMA/ODIT/25/317377"}];
-const defaultCandidates=[{name:"Baraka Mushi", viceName:"Neema John", position:"Rais na Makamu", votes:0, photo:"mgombea2.jpg", vicePhoto:"mgombea1.jpg", caption:"Tutaweka maji na umeme darasani!"},{name:"Kelvin Sam", viceName:"Amina Said", position:"Rais na Makamu", votes:0, photo:"", vicePhoto:"mgombea3.jpg", caption:"Elimu bora kwa wote!"},{name:"Joshua Paulo", position:"Katibu", votes:0, photo:"", caption:"Nitahakikisha notes zinafika kwa wakati"},{name:"Grace Daniel", position:"Katibu", votes:0, photo:"", caption:"Uaminifu na uwazi"}];
+const defaultCandidates=[{name:"Baraka Mushi", viceName:"Neema John", position:"President and Deputy", votes:0, photo:"mgombea2.jpg", vicePhoto:"mgombea1.jpg", caption:"We will bring water and electricity to class!"},{name:"Kelvin Sam", viceName:"Amina Said", position:"President and Deputy", votes:0, photo:"", vicePhoto:"mgombea3.jpg", caption:"Quality education for all!"},{name:"Joshua Paulo", position:"Secretary", votes:0, photo:"", caption:"I will ensure notes arrive on time"},{name:"Grace Daniel", position:"Secretary", votes:0, photo:"", caption:"Honesty and transparency"}];
 function cleanId(s){ return s.toUpperCase().replaceAll("/","-").replaceAll(" ","-"); }
 function norm(s){ return s.toLowerCase().trim().replace(/\s+/g," "); }
 function nameMatches(a,t){ let an=norm(a), tn=norm(t); if(an===tn) return true; let af=an.split(" ")[0], tf=tn.split(" ")[0]; if(af===tf) return true; if(tn.includes(af) || an.includes(tf)) return true; return false; }
 function togglePass(){ let el=document.getElementById('adminPass'); el.type = el.type==="password" ? "text" : "password"; }
 function togglePass2(id){ let el=document.getElementById(id); el.type = el.type==="password" ? "text" : "password"; }
 function showForgot(){ document.getElementById('forgotBox').classList.toggle('hidden'); }
-function clearMyPhone(){ localStorage.clear(); document.getElementById('clearMsg').innerText="✅ Kumbukumbu imefutwa! Sasa andika jina na namba upya na bonyeza Ingia."; document.getElementById('loginMsg').innerText=""; }
+function clearMyPhone(){ localStorage.clear(); document.getElementById('clearMsg').innerText="✅ Memory cleared! Now enter name and number again and click Login."; document.getElementById('loginMsg').innerText=""; }
 async function ensureAllowed(){ try{ if(!db) return; const snap=await db.collection('allowedStudents').get(); if(snap.empty){ for(let s of defaultAllowed){ await db.collection('allowedStudents').doc(cleanId(s.reg)).set({name:s.name, reg:s.reg}); } } }catch(e){} }
 async function loadVoteTime(){ try{ if(!db) return; const d=await db.collection('settings').doc('voteTime').get(); if(d.exists){ voteTime=d.data(); if(voteTime.start) document.getElementById('voteStart').value = new Date(voteTime.start).toISOString().slice(0,16); if(voteTime.end) document.getElementById('voteEnd').value = new Date(voteTime.end).toISOString().slice(0,16); } }catch(e){} updateCountdown(); }
-async function saveVoteTime(){ const s=document.getElementById('voteStart').value; const e=document.getElementById('voteEnd').value; if(!s||!e){ alert("Weka muda wa kuanza na kumaliza"); return; } voteTime={start:new Date(s).getTime(), end:new Date(e).getTime()}; try{ await db.collection('settings').doc('voteTime').set(voteTime); }catch(err){} document.getElementById('timeMsg').innerText="✅ Muda umewekwa!"; updateCountdown(); loadAdmin(); }
-function isVotingOpen(){ if(!voteTime.start || !voteTime.end) return {open:true, msg:""}; const now=Date.now(); if(now < voteTime.start) return {open:false, msg:"⏳ Uchaguzi haujafunguliwa bado. Unaanza: "+new Date(voteTime.start).toLocaleString()}; if(now > voteTime.end) return {open:false, msg:"🏁 Uchaguzi umefungwa! Uliisha: "+new Date(voteTime.end).toLocaleString()}; return {open:true, msg:"🟢 Uchaguzi unaendelea! Unaisha: "+new Date(voteTime.end).toLocaleString()}; }
-function updateCountdown(){ const st=isVotingOpen(); const el1=document.getElementById('countdownLogin'); const el2=document.getElementById('countdownVote'); const elA=document.getElementById('adminCountdown'); if(el1) el1.innerText=st.msg || "🟢 Uchaguzi uko wazi - Ingia kupiga kura"; if(el2) el2.innerText=st.msg; if(elA) elA.innerText=st.msg; const btn=document.getElementById('loginBtn'); if(btn) btn.disabled = !st.open; }
+async function saveVoteTime(){ const s=document.getElementById('voteStart').value; const e=document.getElementById('voteEnd').value; if(!s||!e){ alert("Enter start and end time"); return; } voteTime={start:new Date(s).getTime(), end:new Date(e).getTime()}; try{ await db.collection('settings').doc('voteTime').set(voteTime); }catch(err){} document.getElementById('timeMsg').innerText="✅ Time saved!"; updateCountdown(); loadAdmin(); }
+function isVotingOpen(){ if(!voteTime.start || !voteTime.end) return {open:true, msg:""}; const now=Date.now(); if(now < voteTime.start) return {open:false, msg:"⏳ Election has not opened yet. Starts: "+new Date(voteTime.start).toLocaleString()}; if(now > voteTime.end) return {open:false, msg:"🏁 Election is closed! Ended: "+new Date(voteTime.end).toLocaleString()}; return {open:true, msg:"🟢 Election is ongoing! Ends: "+new Date(voteTime.end).toLocaleString()}; }
+function updateCountdown(){ const st=isVotingOpen(); const el1=document.getElementById('countdownLogin'); const el2=document.getElementById('countdownVote'); const elA=document.getElementById('adminCountdown'); if(el1) el1.innerText=st.msg || "🟢 Election is open - Login to vote"; if(el2) el2.innerText=st.msg; if(elA) elA.innerText=st.msg; const btn=document.getElementById('loginBtn'); if(btn) btn.disabled = !st.open; }
 setInterval(updateCountdown, 30000);
 ensureAllowed(); loadVoteTime();
 function doLoginSuccess(){ document.getElementById('voterName').innerText=myName; document.getElementById('loginCard').classList.add('hidden'); document.getElementById('voteCard').classList.remove('hidden'); loadCandidates(); }
 async function resetPassword(){
   const newPass=document.getElementById('newPassInput').value.trim();
   const name=document.getElementById('name').value.trim(); const reg=document.getElementById('reg').value.trim().toUpperCase();
-  if(!name||!reg||!newPass){ document.getElementById('forgotMsg').innerText="Jaza Jina, Reg na Password mpya"; return; }
+  if(!name||!reg||!newPass){ document.getElementById('forgotMsg').innerText="Fill Name, Reg No and New Password"; return; }
   try{
     const docId=cleanId(reg); const d=await db.collection('allowedStudents').doc(docId).get();
-    if(!d.exists){ document.getElementById('forgotMsg').innerText="❌ Reg No haipo kwenye mfumo!"; return; }
-    if(!nameMatches(d.data().name, name)){ document.getElementById('forgotMsg').innerText="❌ Jina halilingani! Katika mfumo ni: "+d.data().name; return; }
+    if(!d.exists){ document.getElementById('forgotMsg').innerText="❌ Reg No not found in system!"; return; }
+    if(!nameMatches(d.data().name, name)){ document.getElementById('forgotMsg').innerText="❌ Name does not match! In system it is: "+d.data().name; return; }
     await db.collection('allowedStudents').doc(docId).update({password:newPass});
-    document.getElementById('forgotMsg').innerText="✅ Password imebadilishwa! Sasa ingia na password mpya. Kama ulishapiga kura, bado utasoma 'Imepiga kura'.";
+    document.getElementById('forgotMsg').innerText="✅ Password changed! Now login with new password. If you already voted, it will still show as Voted.";
     document.getElementById('password').value=newPass;
-  }catch(e){ document.getElementById('forgotMsg').innerText="Kosa: "+e.message; }
+  }catch(e){ document.getElementById('forgotMsg').innerText="Error: "+e.message; }
 }
 async function login(){
   myName=document.getElementById('name').value.trim(); myReg=document.getElementById('reg').value.trim().toUpperCase();
   const pass=document.getElementById('password').value.trim();
-  if(!myName||!myReg){ document.getElementById('loginMsg').innerText="Jaza jina na namba"; return; }
-  if(!pass){ document.getElementById('loginMsg').innerText="Andika Password yako. Kama ni mara ya kwanza, tengeneza password yoyote utakayokumbuka - itahifadhiwa."; return; }
+  if(!myName||!myReg){ document.getElementById('loginMsg').innerText="Fill name and registration number"; return; }
+  if(!pass){ document.getElementById('loginMsg').innerText="Enter your password. If this is your first time, create any password you will remember - it will be saved."; return; }
   const timeCheck=isVotingOpen();
   if(!timeCheck.open){ document.getElementById('loginMsg').innerText=timeCheck.msg; return; }
-  myDocId=cleanId(myReg); document.getElementById('loginMsg').innerText="Inathibitisha...";
-  // 3 + 8. CHECK KWENYE SERVER KWANZA - sio simu tu. Hata akibadilisha password, Reg bado inasoma imepiga.
-  try{
-    if(db){
-      const stuDoc=await db.collection('students').doc(myDocId).get();
-      if(stuDoc.exists && stuDoc.data().voted===true){ document.getElementById('loginMsg').innerText="⚠️ Reg No "+myReg+" IMESHAPIGA KURA! Huwezi kupiga tena. Admin akifuta waliopiga ndipo utaweza."; return; }
-    }
-  }catch(e){}
-  if(localStorage.getItem("voted_"+myDocId)==="1"){ document.getElementById('loginMsg').innerText="⚠️ Umesha pigia kura kwenye simu hii!"; return; }
-  // 5. LOGIN KWA REG NO AMBAYO ADMIN AMEWEKA TU
-  let allowedData=null;
-  let foundDefault = defaultAllowed.find(s => cleanId(s.reg)===myDocId);
-  if(foundDefault) allowedData=foundDefault;
+  myDocId=cleanId(myReg); document.getElementById('loginMsg').innerText="Verifying...";
+  try{ if(db){ const stuDoc=await db.collection('students').doc(myDocId).get(); if(stuDoc.exists && stuDoc.data().voted===true){ document.getElementById('loginMsg').innerText="⚠️ Reg No "+myReg+" HAS ALREADY VOTED! You cannot vote again. Only Admin can clear voters."; return; } } }catch(e){}
+  if(localStorage.getItem("voted_"+myDocId)==="1"){ document.getElementById('loginMsg').innerText="⚠️ You have already voted on this phone!"; return; }
+  let allowedData=null; let foundDefault = defaultAllowed.find(s => cleanId(s.reg)===myDocId); if(foundDefault) allowedData=foundDefault;
   try{ if(db){ const allowedDoc = await db.collection('allowedStudents').doc(myDocId).get(); if(allowedDoc.exists) allowedData=allowedDoc.data(); } }catch(e){}
-  if(!allowedData){ document.getElementById('loginMsg').innerText="❌ HAUPO KWENYE MFUMO! Namba "+myReg+" haijasajiliwa na Admin."; return; }
-  if(!nameMatches(allowedData.name, myName)){ document.getElementById('loginMsg').innerText="❌ Jina halilingani! Katika mfumo ni: "+allowedData.name; return; }
-  // 8. PASSWORD LOGIC
-  try{
-    if(db){
-      const allowedDoc = await db.collection('allowedStudents').doc(myDocId).get();
-      const existingPass = allowedDoc.data().password;
-      if(existingPass){
-        if(existingPass !== pass){ document.getElementById('loginMsg').innerText="❌ Password si sahihi! Bonyeza 'Nimesahau Password?' kutengeneza mpya."; return; }
-      } else {
-        await db.collection('allowedStudents').doc(myDocId).set({password:pass},{merge:true});
-      }
-    }
-  }catch(e){}
-  document.getElementById('loginMsg').innerText="✅ Umethibitishwa!"; doLoginSuccess();
+  if(!allowedData){ document.getElementById('loginMsg').innerText="❌ NOT IN SYSTEM! Number "+myReg+" is not registered by Admin."; return; }
+  if(!nameMatches(allowedData.name, myName)){ document.getElementById('loginMsg').innerText="❌ Name does not match! In system it is: "+allowedData.name; return; }
+  try{ if(db){ const allowedDoc = await db.collection('allowedStudents').doc(myDocId).get(); const existingPass = allowedDoc.data().password; if(existingPass){ if(existingPass !== pass){ document.getElementById('loginMsg').innerText="❌ Wrong password! Click 'Forgot Password?' to create a new one."; return; } } else { await db.collection('allowedStudents').doc(myDocId).set({password:pass},{merge:true}); } } }catch(e){}
+  document.getElementById('loginMsg').innerText="✅ Verified!"; doLoginSuccess();
   try{ if(db) await db.collection('students').doc(myDocId).set({name:myName,reg:myReg,voted:false},{merge:true}); }catch(e){}
 }
-async function loadCandidates(){
-  allCandidates=defaultCandidates.map((c,i)=>({id:"local"+i,...c})); renderCandidates();
-  try{ if(!db) return; const snap=await db.collection('candidates').get(); if(!snap.empty){ allCandidates=[]; snap.forEach(d=>allCandidates.push({id:d.id,...d.data()})); renderCandidates(); } else{ for(let c of defaultCandidates){ await db.collection('candidates').add(c); } } }catch(e){}
-}
+async function loadCandidates(){ allCandidates=defaultCandidates.map((c,i)=>({id:"local"+i,...c})); renderCandidates(); try{ if(!db) return; const snap=await db.collection('candidates').get(); if(!snap.empty){ allCandidates=[]; snap.forEach(d=>allCandidates.push({id:d.id,...d.data()})); renderCandidates(); } else{ for(let c of defaultCandidates){ await db.collection('candidates').add(c); } } }catch(e){} }
 function renderCandidates(){
   document.getElementById('loadMsg').innerText="";
   const positions=[...new Set(allCandidates.map(c=>c.position))]; let html="";
   positions.forEach(pos=>{
     html+=`<div><h3>${pos}</h3>`;
     allCandidates.filter(c=>c.position===pos).forEach(c=>{
-      // 2. TICKET: Rais + Makamu pamoja
-      if(c.position==="Rais na Makamu"){
+      if(c.position==="President and Deputy"){
         let img1 = c.photo ? `<img src="${c.photo}" onerror="this.style.display='none'" style="width:72px;height:72px">` : `<div style="width:72px;height:72px;border-radius:50%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:30px">👤</div>`;
         let img2 = c.vicePhoto ? `<img src="${c.vicePhoto}" onerror="this.style.display='none'" style="width:72px;height:72px">` : `<div style="width:72px;height:72px;border-radius:50%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:30px">👤</div>`;
-        html+=`<div class="cand" onclick="select('${pos}','${c.id}')" id="cand-${c.id}"><div style="flex:1"><div class="ticket">${img1}<div><b>👑 Rais: ${c.name}</b></div></div><div style="text-align:center;font-weight:900;color:#f97316;margin:4px 0">+ NA +</div><div class="ticket">${img2}<div><b>🤝 Makamu: ${c.viceName||''}</b></div></div><p class="caption">💬 "${c.caption||''}"</p></div><span style="font-weight:900;color:#16a34a">Chagua Ticket →</span></div>`;
+        html+=`<div class="cand" onclick="select('${pos}','${c.id}')" id="cand-${c.id}"><div style="flex:1"><div class="ticket">${img1}<div><b>👑 President: ${c.name}</b></div></div><div style="text-align:center;font-weight:900;color:#f97316;margin:4px 0">+ AND +</div><div class="ticket">${img2}<div><b>🤝 Deputy: ${c.viceName||''}</b></div></div><p class="caption">💬 "${c.caption||''}"</p></div><span style="font-weight:900;color:#16a34a">Choose Ticket →</span></div>`;
       } else {
         let img = c.photo ? `<img src="${c.photo}" onerror="this.style.display='none'">` : `<div style="width:80px;height:80px;border-radius:50%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0">👤</div>`;
-        html+=`<div class="cand" onclick="select('${pos}','${c.id}')" id="cand-${c.id}">${img}<div class="cand-info"><b>${c.name}</b><br><small>${c.position}</small><p class="caption">💬 "${c.caption||''}"</p></div><span>Chagua</span></div>`;
+        html+=`<div class="cand" onclick="select('${pos}','${c.id}')" id="cand-${c.id}">${img}<div class="cand-info"><b>${c.name}</b><br><small>${c.position}</small><p class="caption">💬 "${c.caption||''}"</p></div><span>Choose</span></div>`;
       }
     });
     html+=`</div>`;
@@ -223,111 +197,54 @@ function renderCandidates(){
 function select(pos,id){ selected[pos]=id; document.querySelectorAll('.cand').forEach(el=>el.classList.remove('selected')); for(let p in selected){ let el=document.getElementById('cand-'+selected[p]); if(el) el.classList.add('selected'); } }
 async function submitVote(){
   const timeCheck=isVotingOpen(); if(!timeCheck.open){ document.getElementById('voteMsg').innerText=timeCheck.msg; return; }
-  const positions=[...new Set(allCandidates.map(c=>c.position))]; if(Object.keys(selected).length<positions.length){ document.getElementById('voteMsg').innerText="Chagua mgombea kwa kila nafasi"; return; }
-  document.getElementById('submitBtn').disabled=true; document.getElementById('voteMsg').innerText="Inatuma kura...";
-  try{
-    // 3. Double-check server kabla ya kutuma - kuzuia kupiga mara 2
-    if(db){ const chk=await db.collection('students').doc(myDocId).get(); if(chk.exists && chk.data().voted===true){ document.getElementById('voteMsg').innerText="⚠️ Tayari umeshapiga kura!"; return; } }
-    if(db){ for(let pos in selected){ const cand=allCandidates.find(c=>c.id===selected[pos]); if(cand.id.startsWith("local")) continue; await db.collection('candidates').doc(cand.id).update({votes: firebase.firestore.FieldValue.increment(1)}); } await db.collection('students').doc(myDocId).set({name:myName,reg:myReg,voted:true},{merge:true}); }
-  }catch(e){ document.getElementById('voteMsg').innerText="Kosa: "+e.message; document.getElementById('submitBtn').disabled=false; return; }
+  const positions=[...new Set(allCandidates.map(c=>c.position))]; if(Object.keys(selected).length<positions.length){ document.getElementById('voteMsg').innerText="Choose a candidate for each position"; return; }
+  document.getElementById('submitBtn').disabled=true; document.getElementById('voteMsg').innerText="Submitting vote...";
+  try{ if(db){ const chk=await db.collection('students').doc(myDocId).get(); if(chk.exists && chk.data().voted===true){ document.getElementById('voteMsg').innerText="⚠️ You have already voted!"; return; } } if(db){ for(let pos in selected){ const cand=allCandidates.find(c=>c.id===selected[pos]); if(cand.id.startsWith("local")) continue; await db.collection('candidates').doc(cand.id).update({votes: firebase.firestore.FieldValue.increment(1)}); } await db.collection('students').doc(myDocId).set({name:myName,reg:myReg,voted:true},{merge:true}); } }catch(e){ document.getElementById('voteMsg').innerText="Error: "+e.message; document.getElementById('submitBtn').disabled=false; return; }
   localStorage.setItem("voted_"+myDocId,"1"); document.getElementById('voteCard').classList.add('hidden'); document.getElementById('doneCard').classList.remove('hidden');
 }
 async function showResults(){
   document.getElementById('loginCard').classList.add('hidden'); document.getElementById('voteCard').classList.add('hidden'); document.getElementById('doneCard').classList.add('hidden'); document.getElementById('adminCard').classList.add('hidden'); document.getElementById('resultCard').classList.remove('hidden');
-  document.getElementById('resultNote').innerText="Mwanafunzi anaona mshindi na nafasi tu - haoni idadi ya watu waliopiga. Idadi anaiona Admin tu.";
+  document.getElementById('resultNote').innerText="Student sees winner and position only - does not see number of people who voted. Only Admin sees numbers.";
   let list=defaultCandidates; try{ if(db){ const snap=await db.collection('candidates').get(); if(!snap.empty){ list=[]; snap.forEach(d=>list.push(d.data())); } } }catch(e){}
   const positions=[...new Set(list.map(c=>c.position))]; let html="";
-  positions.forEach(pos=>{
-    html+=`<h3>${pos}</h3>`; let arr=list.filter(c=>c.position===pos); let total=arr.reduce((s,c)=>s+(c.votes||0),0)||1;
-    arr.sort((a,b)=>(b.votes||0)-(a.votes||0)).forEach((c,idx)=>{
-      let pct=Math.round(((c.votes||0)/total)*100);
-      // 7. MWANAFUNZI ASIONE IDADI - anaona % na nafasi tu, sio kura ngapi wala watu wangapi
-      let label = c.position==="Rais na Makamu" ? `${c.name} + ${c.viceName||''}` : c.name;
-      html+=`<div style="margin-bottom:12px"><b>${idx===0?"🏆 ":""}${label}</b> - ${pct}%<div class="result-bar"><div class="result-fill" style="width:${pct}%"></div></div><p class="caption">💬 "${c.caption||''}"</p></div>`;
-    });
-  });
+  positions.forEach(pos=>{ html+=`<h3>${pos}</h3>`; let arr=list.filter(c=>c.position===pos); let total=arr.reduce((s,c)=>s+(c.votes||0),0)||1; arr.sort((a,b)=>(b.votes||0)-(a.votes||0)).forEach((c,idx)=>{ let pct=Math.round(((c.votes||0)/total)*100); let label = c.position==="President and Deputy" ? `${c.name} + ${c.viceName||''}` : c.name; html+=`<div style="margin-bottom:12px"><b>${idx===0?"🏆 ":""}${label}</b> - ${pct}%<div class="result-bar"><div class="result-fill" style="width:${pct}%"></div></div><p class="caption">💬 "${c.caption||''}"</p></div>`; }); });
   document.getElementById('results').innerHTML=html;
 }
-function adminLogin(){ const p=document.getElementById('adminPass').value.trim(); if(p!==ADMIN_PASS){ document.getElementById('adminMsg').innerText="❌ Password si sahihi!"; return; } document.getElementById('loginCard').classList.add('hidden'); document.getElementById('adminCard').classList.remove('hidden'); loadAdmin(); }
+function adminLogin(){ const p=document.getElementById('adminPass').value.trim(); if(p!==ADMIN_PASS){ document.getElementById('adminMsg').innerText="❌ Wrong password!"; return; } document.getElementById('loginCard').classList.add('hidden'); document.getElementById('adminCard').classList.remove('hidden'); loadAdmin(); }
 async function loadAdmin(){
   await ensureAllowed(); let list=defaultCandidates; let voterDocs=[]; let allowed=[...defaultAllowed];
   try{ if(db){ const snap=await db.collection('candidates').get(); if(!snap.empty){ list=[]; snap.forEach(d=>list.push({id:d.id,...d.data()})); } const sSnap=await db.collection('students').get(); sSnap.forEach(d=>{ voterDocs.push({id:d.id,...d.data()}); }); const aSnap=await db.collection('allowedStudents').get(); if(!aSnap.empty){ allowed=[]; aSnap.forEach(d=>{ allowed.push({id:d.id,...d.data()}); }); } } }catch(e){}
   const positions=[...new Set(list.map(c=>c.position))]; let html=""; let totalAll=0;
-  positions.forEach(pos=>{ html+=`<h4>${pos}</h4>`; list.filter(c=>c.position===pos).sort((a,b)=>(b.votes||0)-(a.votes||0)).forEach(c=>{ totalAll+=(c.votes||0); let label=c.position==="Rais na Makamu" ? `${c.name} + ${c.viceName||''}` : c.name; html+=`<div>${label} - <b>${c.votes||0} kura</b> - "${c.caption||''}"</div>`; }); });
-  document.getElementById('adminResults').innerHTML=html; document.getElementById('totalVotes').innerText="Jumla ya kura: "+totalAll+" | Wanafunzi waliosajiliwa: "+allowed.length+" | Walio piga: "+voterDocs.filter(v=>v.voted).length;
-  let candHtml=""; list.forEach(c=>{ let label=c.position==="Rais na Makamu" ? `${c.name} + ${c.viceName||''}` : c.name; let img=c.photo?`<img src="${c.photo}" style="width:50px;height:50px;border-radius:50%;object-fit:cover">`:""; candHtml+=`<div style="display:flex;justify-content:space-between;align-items:center;border:1px solid #ddd;padding:8px;border-radius:8px;margin:4px 0"><span style="display:flex;gap:8px;align-items:center">${img}<span>${label} - ${c.position} (${c.votes||0})<br><small>${c.caption||''}</small></span></span><button class="btn-small" style="background:#dc2626" onclick="deleteCandidate('${c.id}')">❌</button></div>`; }); document.getElementById('adminCandList').innerHTML=candHtml;
-  let aHtml=`<table><tr><th>Jina</th><th>Reg</th><th>Password</th><th></th></tr>`; allowed.forEach(s=>{ aHtml+=`<tr><td>${s.name}</td><td>${s.reg}</td><td>${s.password?'✅ Ipo':'❌ Bado'}</td><td><button class="btn-small" style="background:#dc2626" onclick="deleteAllowed('${s.id||cleanId(s.reg)}')">❌</button></td></tr>`; }); aHtml+=`</table><p><b>Jumla:</b> ${allowed.length} wanafunzi</p>`; document.getElementById('allowedList').innerHTML=aHtml;
-  if(voterDocs.length===0){ document.getElementById('votersList').innerHTML="Bado hakuna aliyepiga."; } else { let vHtml=`<table><tr><th>Jina</th><th>Reg</th><th></th></tr>`; voterDocs.forEach(s=>{ vHtml+=`<tr><td>${s.name||''}</td><td>${s.reg||''}</td><td>${s.voted?'✅ Amepiga':'❌ Bado'} <button class="btn-small" style="background:#dc2626" onclick="deleteVoter('${s.id}')">❌</button></td></tr>`; }); vHtml+=`</table>`; document.getElementById('votersList').innerHTML=vHtml; }
+  positions.forEach(pos=>{ html+=`<h4>${pos}</h4>`; list.filter(c=>c.position===pos).sort((a,b)=>(b.votes||0)-(a.votes||0)).forEach(c=>{ totalAll+=(c.votes||0); let label=c.position==="President and Deputy" ? `${c.name} + ${c.viceName||''}` : c.name; html+=`<div>${label} - <b>${c.votes||0} votes</b> - "${c.caption||''}"</div>`; }); });
+  document.getElementById('adminResults').innerHTML=html; document.getElementById('totalVotes').innerText="Total votes: "+totalAll+" | Registered students: "+allowed.length+" | Voted: "+voterDocs.filter(v=>v.voted).length;
+  let candHtml=""; list.forEach(c=>{ let label=c.position==="President and Deputy" ? `${c.name} + ${c.viceName||''}` : c.name; let img=c.photo?`<img src="${c.photo}" style="width:50px;height:50px;border-radius:50%;object-fit:cover">`:""; candHtml+=`<div style="display:flex;justify-content:space-between;align-items:center;border:1px solid #ddd;padding:8px;border-radius:8px;margin:4px 0"><span style="display:flex;gap:8px;align-items:center">${img}<span>${label} - ${c.position} (${c.votes||0})<br><small>${c.caption||''}</small></span></span><button class="btn-small" style="background:#dc2626" onclick="deleteCandidate('${c.id}')">❌</button></div>`; }); document.getElementById('adminCandList').innerHTML=candHtml;
+  let aHtml=`<table><tr><th>Name</th><th>Reg No</th><th>Password</th><th></th></tr>`; allowed.forEach(s=>{ aHtml+=`<tr><td>${s.name}</td><td>${s.reg}</td><td>${s.password?'✅ Set':'❌ Not yet'}</td><td><button class="btn-small" style="background:#dc2626" onclick="deleteAllowed('${s.id||cleanId(s.reg)}')">❌</button></td></tr>`; }); aHtml+=`</table><p><b>Total:</b> ${allowed.length} students</p>`; document.getElementById('allowedList').innerHTML=aHtml;
+  if(voterDocs.length===0){ document.getElementById('votersList').innerHTML="No one has voted yet."; } else { let vHtml=`<table><tr><th>Name</th><th>Reg No</th><th></th></tr>`; voterDocs.forEach(s=>{ vHtml+=`<tr><td>${s.name||''}</td><td>${s.reg||''}</td><td>${s.voted?'✅ Voted':'❌ Not yet'} <button class="btn-small" style="background:#dc2626" onclick="deleteVoter('${s.id}')">❌</button></td></tr>`; }); vHtml+=`</table>`; document.getElementById('votersList').innerHTML=vHtml; }
 }
-async function addStudent(){ const n=document.getElementById('newStudentName').value.trim(); const r=document.getElementById('newStudentReg').value.trim().toUpperCase(); if(!n||!r){ alert("Jaza jina na namba"); return; } try{ await db.collection('allowedStudents').doc(cleanId(r)).set({name:n,reg:r}); }catch(e){ alert("Kosa Firebase"); return; } document.getElementById('studentActionMsg').innerText="✅ "+n+" amesajiliwa!"; document.getElementById('newStudentName').value=""; document.getElementById('newStudentReg').value=""; loadAdmin(); }
-// 1. EXCEL UPLOAD - MPYA
+async function addStudent(){ const n=document.getElementById('newStudentName').value.trim(); const r=document.getElementById('newStudentReg').value.trim().toUpperCase(); if(!n||!r){ alert("Fill name and number"); return; } try{ await db.collection('allowedStudents').doc(cleanId(r)).set({name:n,reg:r}); }catch(e){ alert("Firebase error"); return; } document.getElementById('studentActionMsg').innerText="✅ "+n+" registered!"; document.getElementById('newStudentName').value=""; document.getElementById('newStudentReg').value=""; loadAdmin(); }
 async function uploadExcel(){
-  const file=document.getElementById('excelFile').files[0];
-  if(!file){ alert("Chagua faili la Excel kwanza!"); return; }
-  document.getElementById('excelMsg').innerText="Inasoma Excel...";
+  const file=document.getElementById('excelFile').files[0]; if(!file){ alert("Choose Excel file first!"); return; }
+  document.getElementById('excelMsg').innerText="Reading Excel...";
   const reader=new FileReader();
-  reader.onload=async function(e){
-    try{
-      const data=new Uint8Array(e.target.result); const wb=XLSX.read(data,{type:'array'}); const ws=wb.Sheets[wb.SheetNames[0]]; const rows=XLSX.utils.sheet_to_json(ws,{header:1});
-      let count=0, failed=0, skipped=0;
-      // 9. SPEED: Batch - andika 400 kwa pamoja, sio moja moja
-      let batch=db.batch(); let batchCount=0;
-      for(let i=0;i<rows.length;i++){
-        let row=rows[i]; if(!row || row.length<2) continue;
-        let n=String(row[0]||"").trim(); let r=String(row[1]||"").trim().toUpperCase();
-        // Ruka kichwa cha Excel kama ni "Jina" / "Name"
-        if(!n||!r || n.toLowerCase()==="jina" || n.toLowerCase()==="name" || r.toLowerCase().includes("reg")) { skipped++; continue; }
-        if(!r.includes("/")) { failed++; continue; }
-        let ref=db.collection('allowedStudents').doc(cleanId(r)); batch.set(ref,{name:n,reg:r},{merge:true}); batchCount++; count++;
-        if(batchCount>=400){ await batch.commit(); batch=db.batch(); batchCount=0; }
-      }
-      if(batchCount>0) await batch.commit();
-      document.getElementById('excelMsg').innerText=`✅ Wanafunzi ${count} wamesajiliwa kupitia Excel! ${failed>0?` (Wameshindwa: ${failed})`:""}`;
-      document.getElementById('excelFile').value=""; loadAdmin();
-    }catch(err){ document.getElementById('excelMsg').innerText="❌ Kosa kusoma Excel: "+err.message; }
-  };
+  reader.onload=async function(e){ try{ const data=new Uint8Array(e.target.result); const wb=XLSX.read(data,{type:'array'}); const ws=wb.Sheets[wb.SheetNames[0]]; const rows=XLSX.utils.sheet_to_json(ws,{header:1}); let count=0, failed=0, skipped=0; let batch=db.batch(); let batchCount=0; for(let i=0;i<rows.length;i++){ let row=rows[i]; if(!row || row.length<2) continue; let n=String(row[0]||"").trim(); let r=String(row[1]||"").trim().toUpperCase(); if(!n||!r || n.toLowerCase()==="name" || r.toLowerCase().includes("reg")) { skipped++; continue; } if(!r.includes("/")) { failed++; continue; } let ref=db.collection('allowedStudents').doc(cleanId(r)); batch.set(ref,{name:n,reg:r},{merge:true}); batchCount++; count++; if(batchCount>=400){ await batch.commit(); batch=db.batch(); batchCount=0; } } if(batchCount>0) await batch.commit(); document.getElementById('excelMsg').innerText=`✅ ${count} students registered via Excel! ${failed>0?` (Failed: ${failed})`:""}`; document.getElementById('excelFile').value=""; loadAdmin(); }catch(err){ document.getElementById('excelMsg').innerText="❌ Error reading Excel: "+err.message; } };
   reader.readAsArrayBuffer(file);
 }
-function exportStudentsExcel(){
-  const rows=[["Jina","Reg No"]]; document.querySelectorAll('#allowedList table tr').forEach((tr,idx)=>{ if(idx===0) return; let tds=tr.querySelectorAll('td'); if(tds.length>=2) rows.push([tds[0].innerText, tds[1].innerText]); });
-  let csv=rows.map(r=>r.join(",")).join("\n"); let blob=new Blob([csv],{type:"text/csv"}); let a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="wanafunzi.csv"; a.click();
-}
-async function addBulkStudents(){ const txt=document.getElementById('bulkStudents').value.trim(); if(!txt){ alert("Andika orodha kwanza"); return; } let lines=txt.split("\n"); let count=0; let batch=db.batch(); let bc=0; for(let line of lines){ let parts=line.split(","); if(parts.length<2) continue; let n=parts[0].trim(); let r=parts[1].trim().toUpperCase(); if(!n||!r) continue; try{ batch.set(db.collection('allowedStudents').doc(cleanId(r)),{name:n,reg:r},{merge:true}); bc++; count++; if(bc>=400){ await batch.commit(); batch=db.batch(); bc=0; } }catch(e){} } if(bc>0) await batch.commit(); document.getElementById('studentActionMsg').innerText="✅ Wanafunzi "+count+" wamesajiliwa!"; document.getElementById('bulkStudents').value=""; loadAdmin(); }
-async function deleteAllowed(id){ if(!confirm("Futa huyu mwanafunzi?")) return; try{ await db.collection('allowedStudents').doc(id).delete(); }catch(e){} loadAdmin(); }
+function exportStudentsExcel(){ const rows=[["Name","Reg No"]]; document.querySelectorAll('#allowedList table tr').forEach((tr,idx)=>{ if(idx===0) return; let tds=tr.querySelectorAll('td'); if(tds.length>=2) rows.push([tds[0].innerText, tds[1].innerText]); }); let csv=rows.map(r=>r.join(",")).join("\n"); let blob=new Blob([csv],{type:"text/csv"}); let a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="students.csv"; a.click(); }
+async function addBulkStudents(){ const txt=document.getElementById('bulkStudents').value.trim(); if(!txt){ alert("Enter list first"); return; } let lines=txt.split("\n"); let count=0; let batch=db.batch(); let bc=0; for(let line of lines){ let parts=line.split(","); if(parts.length<2) continue; let n=parts[0].trim(); let r=parts[1].trim().toUpperCase(); if(!n||!r) continue; try{ batch.set(db.collection('allowedStudents').doc(cleanId(r)),{name:n,reg:r},{merge:true}); bc++; count++; if(bc>=400){ await batch.commit(); batch=db.batch(); bc=0; } }catch(e){} } if(bc>0) await batch.commit(); document.getElementById('studentActionMsg').innerText="✅ "+count+" students registered!"; document.getElementById('bulkStudents').value=""; loadAdmin(); }
+async function deleteAllowed(id){ if(!confirm("Delete this student?")) return; try{ await db.collection('allowedStudents').doc(id).delete(); }catch(e){} loadAdmin(); }
 function fileToBase64(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
 async function addCandidate(){
-  const n=document.getElementById('newCandName').value.trim(); const pos=document.getElementById('newCandPos').value;
-  const vice=document.getElementById('viceName').value.trim(); const caption=document.getElementById('newCandCaption').value.trim();
-  if(!n){ alert("Andika jina la Rais"); return; }
-  if(pos==="Rais na Makamu" && !vice){ alert("Andika jina la Makamu pia - Rais na Makamu wanakwenda pamoja!"); return; }
-  document.getElementById('adminActionMsg').innerText="Inapakia picha...";
-  let photo="", vicePhoto="";
-  try{
-    const f1=document.getElementById('presPhoto').files[0]; if(f1){ if(f1.size>900*1024){ alert("Picha ya Rais ni kubwa sana! Tumia chini ya 900KB"); return; } photo=await fileToBase64(f1); }
-    const f2=document.getElementById('vicePhoto').files[0]; if(f2){ if(f2.size>900*1024){ alert("Picha ya Makamu ni kubwa sana!"); return; } vicePhoto=await fileToBase64(f2); }
-    await db.collection('candidates').add({name:n, viceName:vice, position:pos, votes:0, photo:photo, vicePhoto:vicePhoto, caption:caption});
-  }catch(e){ alert("Kosa: "+e.message); return; }
-  document.getElementById('adminActionMsg').innerText="✅ Ticket "+n+" + "+vice+" imeongezwa!";
+  const n=document.getElementById('newCandName').value.trim(); const pos=document.getElementById('newCandPos').value; const vice=document.getElementById('viceName').value.trim(); const caption=document.getElementById('newCandCaption').value.trim();
+  if(!n){ alert("Enter President name"); return; } if(pos==="President and Deputy" && !vice){ alert("Enter Deputy name too - President and Deputy go together!"); return; }
+  document.getElementById('adminActionMsg').innerText="Uploading photos..."; let photo="", vicePhoto="";
+  try{ const f1=document.getElementById('presPhoto').files[0]; if(f1){ if(f1.size>900*1024){ alert("President photo is too big! Use under 900KB"); return; } photo=await fileToBase64(f1); } const f2=document.getElementById('vicePhoto').files[0]; if(f2){ if(f2.size>900*1024){ alert("Deputy photo is too big!"); return; } vicePhoto=await fileToBase64(f2); } await db.collection('candidates').add({name:n, viceName:vice, position:pos, votes:0, photo:photo, vicePhoto:vicePhoto, caption:caption}); }catch(e){ alert("Error: "+e.message); return; }
+  document.getElementById('adminActionMsg').innerText="✅ Ticket "+n+" + "+vice+" added!";
   document.getElementById('newCandName').value=""; document.getElementById('viceName').value=""; document.getElementById('newCandCaption').value=""; document.getElementById('presPhoto').value=""; document.getElementById('vicePhoto').value=""; loadAdmin();
 }
-async function deleteCandidate(id){ if(!confirm("Futa huyu?")) return; if(id.startsWith("local")) return; await db.collection('candidates').doc(id).delete(); loadAdmin(); }
-async function deleteVoter(id){
-  if(!confirm("Futa huyu mpigaji? Ataweza kupiga tena baada ya hapo.")) return;
-  await db.collection('students').doc(id).delete(); loadAdmin();
-}
-// 3. FIX KUBWA: Admin akifuta waliopiga, Server inafutwa KABISA, na mwanafunzi akijaribu kuingia tena, Server itamruhusu - sio simu tu
-async function deleteAllVoters(){
-  if(!confirm("Futa waliopiga wote? Wataweza kupiga tena.")) return;
-  const sSnap=await db.collection('students').get();
-  let batch=db.batch(); sSnap.forEach(d=>batch.delete(db.collection('students').doc(d.id))); await batch.commit();
-  localStorage.clear(); alert("✅ Wamefutwa kwenye Server! Sasa kila mtu anaweza kupiga tena."); loadAdmin();
-}
-async function resetVotes(){
-  if(!confirm("Futa kura na waliopiga? Itaanza upya kabisa.")) return;
-  const snap=await db.collection('candidates').get(); let b1=db.batch(); snap.forEach(d=>b1.update(db.collection('candidates').doc(d.id),{votes:0})); await b1.commit();
-  const sSnap=await db.collection('students').get(); let b2=db.batch(); sSnap.forEach(d=>b2.delete(db.collection('students').doc(d.id))); await b2.commit();
-  localStorage.clear(); alert("✅ Imesafishwa kabisa!"); loadAdmin();
-}
+async function deleteCandidate(id){ if(!confirm("Delete this?")) return; if(id.startsWith("local")) return; await db.collection('candidates').doc(id).delete(); loadAdmin(); }
+async function deleteVoter(id){ if(!confirm("Delete this voter? He will be able to vote again after this.")) return; await db.collection('students').doc(id).delete(); loadAdmin(); }
+async function deleteAllVoters(){ if(!confirm("Delete all voters? They will be able to vote again.")) return; const sSnap=await db.collection('students').get(); let batch=db.batch(); sSnap.forEach(d=>batch.delete(db.collection('students').doc(d.id))); await batch.commit(); localStorage.clear(); alert("✅ Deleted from Server! Now everyone can vote again."); loadAdmin(); }
+async function resetVotes(){ if(!confirm("Delete votes and voters? It will start completely fresh.")) return; const snap=await db.collection('candidates').get(); let b1=db.batch(); snap.forEach(d=>b1.update(db.collection('candidates').doc(d.id),{votes:0})); await b1.commit(); const sSnap=await db.collection('students').get(); let b2=db.batch(); sSnap.forEach(d=>b2.delete(db.collection('students').doc(d.id))); await b2.commit(); localStorage.clear(); alert("✅ Cleared completely!"); loadAdmin(); }
 </script>
 </body>
-      </html>
+</html>
